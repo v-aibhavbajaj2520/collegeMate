@@ -1,0 +1,201 @@
+@import url('https://fonts.googleapis.com/css2?family=Prosto+One&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Gradient Animation for Card */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Stupid Mole Animation */
+@keyframes moleBounce {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-10px) rotate(5deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-10px) rotate(-5deg);
+  }
+}
+
+@keyframes moleRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(5deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(-5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.mole-animation {
+  animation: moleBounce 2s ease-in-out infinite, moleRotate 3s ease-in-out infinite;
+}
+
+.mole-animation:hover {
+  animation-play-state: paused;
+}
+
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Prosto One', sans-serif;
+  background: linear-gradient(180deg, #EEFFFD 25%, #FFF9CE 100%);
+  background-attachment: fixed;
+  color: #2E3031;
+  line-height: 1.6;
+  font-weight: 400;
+  min-height: 100vh;
+}
+
+/* Custom gradient text utility */
+.gradient-text {
+  background: linear-gradient(90deg, #0066FF 0%, #4690FE 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Button styles */
+.btn-primary {
+  @apply bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5;
+}
+
+.btn-secondary {
+  @apply bg-gray-800 hover:bg-gray-900 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5;
+}
+
+.btn-outline {
+  @apply border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-6 py-3 rounded-lg font-medium transition-all duration-300;
+}
+
+/* Card styles */
+.card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Gradient card */
+.gradient-card {
+  background: linear-gradient(135deg, #0066FF 0%, #4690FE 100%);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Floating WhatsApp icon */
+.whatsapp-float {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background-color: #25D366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+  z-index: 1000;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+}
+
+/* Blur effect for perks section */
+.blur-card {
+  filter: blur(8px);
+  transition: all 0.5s ease;
+}
+
+.blur-card:hover {
+  filter: blur(0);
+  transform: scale(1.05);
+}
+
+/* Carousel animations */
+@keyframes scroll-right {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+@keyframes scroll-left {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(0); }
+}
+
+.scroll-right {
+  animation: scroll-right 30s linear infinite;
+}
+
+.scroll-left {
+  animation: scroll-left 30s linear infinite;
+}
+
+/* Accordion styles */
+.accordion-item {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.accordion-header {
+  padding: 16px 0;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.accordion-content.active {
+  max-height: 200px;
+}
+
+/* Grid pattern background */
+.grid-pattern {
+  background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
