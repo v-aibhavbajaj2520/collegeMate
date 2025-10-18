@@ -130,13 +130,36 @@ const Navbar = () => {
               <>
                 <Link to="/enroll">
                   <motion.button
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{ 
+                      scale: 1.05,
+                      boxShadow: "0 10px 25px rgba(0, 102, 255, 0.3)"
+                    }}
                     whileTap={{ scale: 0.95 }}
-                    className="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-full font-medium transition-all duration-300 shadow-lg"
+                    animate={{
+                      background: [
+                        "linear-gradient(135deg, #0066FF 0%, #4690FE 100%)",
+                        "linear-gradient(135deg, #4690FE 0%, #0066FF 100%)",
+                        "linear-gradient(135deg, #0066FF 0%, #4690FE 100%)"
+                      ]
+                    }}
+                    transition={{
+                      background: {
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }
+                    }}
+                    className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 rounded-full font-medium transition-all duration-300 shadow-lg hover:shadow-xl backdrop-blur-sm border border-white/20"
                   >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <motion.svg 
+                      className="w-5 h-5" 
+                      fill="currentColor" 
+                      viewBox="0 0 20 20"
+                      animate={{ rotate: [0, 5, -5, 0] }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    >
                       <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 1 1 0 00.2-.38.8.8 0 01.15-.4L3.31 9.397zM6.25 13.62a8.969 8.969 0 002.18-.37l-2.18-2.18v2.55zM8.5 15.5a8.969 8.969 0 002.18-.37L8.5 13.12v2.38zM12.5 15.5a8.969 8.969 0 002.18-.37L12.5 13.12v2.38zM15 10.12l1.69-.723a1 1 0 00.2.38 1 1 0 01-.89.89 8.969 8.969 0 00-1.05.174V10.12z" />
-                    </svg>
+                    </motion.svg>
                     <span>Enroll with Us</span>
                   </motion.button>
                 </Link>
@@ -263,13 +286,36 @@ const Navbar = () => {
                   </div>
                   <Link to="/enroll" onClick={() => setIsMobileMenuOpen(false)}>
                     <motion.button
-                      whileHover={{ scale: 1.02 }}
+                      whileHover={{ 
+                        scale: 1.02,
+                        boxShadow: "0 10px 25px rgba(0, 102, 255, 0.3)"
+                      }}
                       whileTap={{ scale: 0.98 }}
-                      className="w-full flex items-center justify-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-6 py-4 rounded-lg font-medium transition-all duration-300 shadow-lg"
+                      animate={{
+                        background: [
+                          "linear-gradient(135deg, #0066FF 0%, #4690FE 100%)",
+                          "linear-gradient(135deg, #4690FE 0%, #0066FF 100%)",
+                          "linear-gradient(135deg, #0066FF 0%, #4690FE 100%)"
+                        ]
+                      }}
+                      transition={{
+                        background: {
+                          duration: 3,
+                          repeat: Infinity,
+                          ease: "easeInOut"
+                        }
+                      }}
+                      className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-4 rounded-lg font-medium transition-all duration-300 shadow-lg hover:shadow-xl backdrop-blur-sm border border-white/20"
                     >
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <motion.svg 
+                        className="w-5 h-5" 
+                        fill="currentColor" 
+                        viewBox="0 0 20 20"
+                        animate={{ rotate: [0, 5, -5, 0] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                      >
                         <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 1 1 0 00.2-.38.8.8 0 01.15-.4L3.31 9.397zM6.25 13.62a8.969 8.969 0 002.18-.37l-2.18-2.18v2.55zM8.5 15.5a8.969 8.969 0 002.18-.37L8.5 13.12v2.38zM12.5 15.5a8.969 8.969 0 002.18-.37L12.5 13.12v2.38zM15 10.12l1.69-.723a1 1 0 00.2.38 1 1 0 01-.89.89 8.969 8.969 0 00-1.05.174V10.12z" />
-                      </svg>
+                      </motion.svg>
                       <span>Enroll with Us</span>
                     </motion.button>
                   </Link>

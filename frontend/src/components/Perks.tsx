@@ -237,7 +237,7 @@ const Perks = () => {
                     initial={{ scale: 0 }}
                     animate={{ scale: hoveredCard === index ? 1 : 0 }}
                     transition={{ duration: 0.3, delay: 0.4 }}
-                    className="absolute top-4 right-4 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center"
+                    className="absolute top-4 right-4 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center"
                   >
                     <span className="text-white text-sm">✓</span>
                   </motion.div>

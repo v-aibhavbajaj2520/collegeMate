@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import UserSidebar from './UserSidebar';
 import DashboardHeader from './DashboardHeader';
-import Bookings from './Bookings';
-import Enroll from './Enroll';
-import Profile from './Profile';
-import Settings from './Settings';
+import Bookings from '../user/Bookings';
+import Enroll from '../user/Enroll';
+import Profile from '../user/Profile';
+import Settings from '../user/Settings';
 
 const DashboardLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);

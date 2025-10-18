@@ -17,7 +17,7 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import MentorDashboard from './pages/MentorDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
-import DashboardLayout from './components/dashboard/DashboardLayout';
+import DashboardLayout from './components/dashboard/shared/DashboardLayout';
 
 function App() {
   return (

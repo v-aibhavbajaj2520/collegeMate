@@ -88,6 +88,19 @@ body {
   @apply bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5;
 }
 
+/* Glass morphism button */
+.btn-glass {
+  @apply bg-white/10 backdrop-blur-md border border-white/20 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:bg-white/20 hover:shadow-lg hover:-translate-y-0.5;
+}
+
+/* Animated gradient button */
+.btn-gradient {
+  background: linear-gradient(135deg, #0066FF 0%, #4690FE 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+  @apply text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5;
+}
+
 .btn-secondary {
   @apply bg-gray-800 hover:bg-gray-900 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5;
 }
