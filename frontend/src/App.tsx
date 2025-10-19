@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { NotificationProvider } from './contexts/NotificationContext';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import PartnerColleges from './components/PartnerColleges';
@@ -22,7 +23,8 @@ import DashboardLayout from './components/dashboard/shared/DashboardLayout';
 function App() {
   return (
     <AuthProvider>
-      <Router>
+      <NotificationProvider>
+        <Router>
         <Routes>
           {/* Public Routes - with main navbar */}
           <Route path="/*" element={
@@ -78,7 +80,8 @@ function App() {
             } 
           />
         </Routes>
-      </Router>
+        </Router>
+      </NotificationProvider>
     </AuthProvider>
   );
 }

@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { prisma } from './prisma.js';
 import authRoutes from './routes/auth.js';
+import notificationRoutes from './routes/notifications.js';
 import { cleanupExpiredOTPs } from './services/cleanup.js';
 
 const app = express();
@@ -12,6 +13,7 @@ app.get('/', (req, res) => res.json({ message: 'College Mate Backend Server is r
 app.get('/api/health', (req, res) => res.json({ status: 'OK', timestamp: new Date().toISOString() }));
 
 app.use('/api/auth', authRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Error handler
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {

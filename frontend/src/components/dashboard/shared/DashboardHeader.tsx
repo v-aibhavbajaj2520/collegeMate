@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../../contexts/AuthContext';
-import { IoIosNotifications } from "react-icons/io";
+import NotificationBell from './NotificationBell';
 
 interface DashboardHeaderProps {
   onMenuClick?: () => void;
@@ -38,11 +38,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onMenuClick }) => {
         {/* Right Zone - User Actions */}
         <div className="flex items-center space-x-6">
           {/* Notification Bell */}
-          <button className="relative p-3 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-all duration-300 group">
-            <IoIosNotifications className="w-6 h-6 group-hover:scale-110 transition-transform" />
-            {/* Notification badge */}
-            <span className="absolute top-2 right-2 w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
-          </button>
+          <NotificationBell />
 
           {/* User Profile Block */}
           <div className="relative">

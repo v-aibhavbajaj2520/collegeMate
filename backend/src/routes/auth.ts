@@ -5,6 +5,7 @@ import { prisma } from '../prisma.js';
 import { sendOTPEmail, sendPasswordResetEmail } from '../utils/email.js';
 import { generateOTP, generateToken } from '../utils/helpers.js';
 import { googleClient } from '../utils/google.js';
+import { createWelcomeNotification } from '../utils/notifications.js';
 import type { AuthRequest } from '../middleware/authenticate.js';
 import { authenticateToken } from '../middleware/authenticate.js';
 
@@ -53,6 +54,10 @@ router.post('/verify-otp', async (req, res) => {
     const updatedUser = await prisma.user.update({ where: { id: user.id }, data: { isVerified: true, otp: null, otpExpiresAt: null, updatedAt: new Date() }, select: { id: true, email: true, name: true, role: true, isVerified: true, createdAt: true } });
 
     const token = generateToken(updatedUser.id, updatedUser.email, updatedUser.role);
+    
+    // Create welcome notification for first-time login
+    await createWelcomeNotification(updatedUser.id);
+    
     res.json({ success: true, message: 'Email verified successfully', token, user: { id: updatedUser.id, email: updatedUser.email, name: updatedUser.name, role: updatedUser.role, isVerified: updatedUser.isVerified } });
   } catch (error) {
     console.error('OTP verification error:', error);
@@ -119,6 +124,9 @@ router.post('/verify-login-otp', async (req, res) => {
 
     const updatedUser = await prisma.user.update({ where: { id: user.id }, data: { otp: null, otpExpiresAt: null, updatedAt: new Date() }, select: { id: true, email: true, name: true, role: true, isVerified: true, createdAt: true } });
     const token = generateToken(updatedUser.id, updatedUser.email, updatedUser.role);
+
+    // Create welcome notification for login
+    await createWelcomeNotification(updatedUser.id);
 
     res.json({ success: true, message: 'Login successful', token, user: { id: updatedUser.id, email: updatedUser.email, name: updatedUser.name, role: updatedUser.role, isVerified: updatedUser.isVerified } });
   } catch (error) {
@@ -196,6 +204,10 @@ router.post('/google/callback', async (req, res) => {
     }
 
     const token = generateToken(user.id, user.email, user.role);
+    
+    // Create welcome notification for Google OAuth login
+    await createWelcomeNotification(user.id);
+    
     res.json({ success: true, message: 'Google authentication successful', token, user: { id: user.id, email: user.email, name: user.name, role: user.role, isVerified: user.isVerified } });
   } catch (error) {
     console.error('❌ Google OAuth error:', error);
@@ -219,6 +231,10 @@ router.post('/google/verify', async (req, res) => {
     }
 
     const token = generateToken(user.id, user.email, user.role);
+    
+    // Create welcome notification for Google OAuth login
+    await createWelcomeNotification(user.id);
+    
     res.json({ success: true, message: 'Google authentication successful', token, user: { id: user.id, email: user.email, name: user.name, role: user.role, isVerified: user.isVerified } });
   } catch (error) {
     console.error('❌ Google token verification error:', error);
