@@ -41,6 +41,7 @@ model User {
 
   // Relations
   notifications Notification[]
+  enrollments Enrollment[]
 
   @@index([email])
 }
@@ -59,6 +60,24 @@ model Notification {
 
   @@index([userId])
   @@index([isRead])
+  @@index([createdAt])
+}
+
+model Enrollment {
+  id                 String    @id @default(cuid())
+  userId             String
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName           String
+  phoneNumber        String
+  email              String
+  course             String
+  college            String
+  hasTakenMentorship Boolean
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([email])
   @@index([createdAt])
 }
 

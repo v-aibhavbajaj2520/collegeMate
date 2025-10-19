@@ -31,7 +31,7 @@ const AdminLayout: React.FC = () => {
         <AdminHeader onMenuClick={() => setSidebarOpen(true)} />
         
         {/* Page Content */}
-        <main className="flex-1">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden">
           <Routes>
             <Route path="/" element={<Navigate to="/admin/dashboard/overview" replace />} />
             <Route path="/overview" element={<AdminDashboardPage />} />

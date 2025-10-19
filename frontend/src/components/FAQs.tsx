@@ -98,7 +98,7 @@ const FAQs = () => {
               whileHover={{ scale: 1.02 }}
               className="p-6 rounded-2xl text-white shadow-lg"
               style={{
-                background: 'linear-gradient(135deg, #218494 0%, #0F4C5C 50%, #000000 100%)'
+                background: 'linear-gradient(135deg, #0066ff 0%, #192B2E 50%, #000000 100%)'
               }}
             >
               <h3 className="text-xl font-bold mb-4 text-white">Still have questions?</h3>
@@ -137,7 +137,7 @@ const FAQs = () => {
                   transition={{ duration: 0.3, delay: index * 0.1 }}
                   className="rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
                   style={{
-                    background: 'linear-gradient(135deg, #218494 0%, #0F4C5C 50%, #000000 100%)'
+                    background: 'linear-gradient(135deg, #0066ff 0%, #192B2E 50%, #000000 100%)'
                   }}
                 >
                   <motion.div

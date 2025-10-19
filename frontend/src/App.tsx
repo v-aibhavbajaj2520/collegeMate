@@ -17,6 +17,7 @@ import LoginPage from './pages/LoginPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import MentorDashboard from './pages/MentorDashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import EnrollmentPage from './pages/EnrollmentPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardLayout from './components/dashboard/shared/DashboardLayout';
 
@@ -50,6 +51,16 @@ function App() {
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/reset-password" element={<ResetPasswordPage />} />
                 </Routes>
+              </main>
+            </div>
+          } />
+          
+          {/* Enrollment Route - with main navbar */}
+          <Route path="/enroll" element={
+            <div className="min-h-screen bg-transparent">
+              <Navbar />
+              <main className="pt-24">
+                <EnrollmentPage />
               </main>
             </div>
           } />

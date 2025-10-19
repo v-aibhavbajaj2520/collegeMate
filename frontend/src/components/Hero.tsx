@@ -1,5 +1,5 @@
-import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { FaGraduationCap, FaPhone, FaWhatsapp } from 'react-icons/fa';
 
 const Hero = () => {
@@ -66,14 +66,16 @@ const Hero = () => {
             transition={{ duration: 0.8, delay: 0.8 }}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="btn-primary flex items-center justify-center space-x-2 text-lg px-8 py-4"
-            >
-              <FaGraduationCap className="text-xl" />
-              <span>Enroll Through Us</span>
-            </motion.button>
+            <Link to="/enroll">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="btn-primary flex items-center justify-center space-x-2 text-lg px-8 py-4"
+              >
+                <FaGraduationCap className="text-xl" />
+                <span>Enroll Through Us</span>
+              </motion.button>
+            </Link>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}

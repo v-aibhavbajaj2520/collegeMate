@@ -191,7 +191,7 @@ const SuccessStories = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
           viewport={{ once: true }}
-          className="mt-20 grid grid-cols-1 md:grid-cols-4 gap-8 text-center"
+          className="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 text-center"
         >
           {[
             { number: "1000+", label: "Success Stories", icon: "🎉" },
@@ -202,11 +202,11 @@ const SuccessStories = () => {
             <motion.div
               key={stat.label}
               whileHover={{ scale: 1.05 }}
-              className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg"
+              className="bg-white/80 backdrop-blur-sm p-4 md:p-6 rounded-2xl shadow-lg"
             >
-              <div className="text-4xl mb-4">{stat.icon}</div>
-              <div className="text-3xl font-bold text-blue-600 mb-2">{stat.number}</div>
-              <div className="text-gray-600 font-medium">{stat.label}</div>
+              <div className="text-3xl md:text-4xl mb-3 md:mb-4">{stat.icon}</div>
+              <div className="text-2xl md:text-3xl font-bold text-blue-600 mb-2">{stat.number}</div>
+              <div className="text-sm md:text-base text-gray-600 font-medium">{stat.label}</div>
             </motion.div>
           ))}
         </motion.div>

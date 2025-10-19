@@ -110,11 +110,11 @@ const AboutPage = () => {
           </motion.div>
 
           <div className="relative">
-            {/* Central Vertical Line */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-gray-300"></div>
+            {/* Central Vertical Line - Hidden on mobile, visible on desktop */}
+            <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-gray-300"></div>
 
             {/* Timeline Cards */}
-            <div className="space-y-16">
+            <div className="space-y-8 md:space-y-16">
               {[
                 {
                   side: 'left',
@@ -159,12 +159,12 @@ const AboutPage = () => {
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, delay: index * 0.2 }}
                   viewport={{ once: true }}
-                  className={`flex items-center ${item.side === 'left' ? 'justify-start' : 'justify-end'}`}
+                  className={`flex items-center justify-center md:${item.side === 'left' ? 'justify-start' : 'justify-end'}`}
                 >
-                  <div className={`w-5/12 ${item.side === 'left' ? 'pr-8' : 'pl-8'}`}>
-                    <div className="bg-gray-800 rounded-2xl p-6 relative">
+                  <div className={`w-full md:w-5/12 ${item.side === 'left' ? 'md:pr-8' : 'md:pl-8'}`}>
+                    <div className="bg-gray-800 rounded-2xl p-4 md:p-6 relative">
                       <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-t-2xl"></div>
-                      <h3 className="text-xl font-bold text-white mb-3">
+                      <h3 className="text-lg md:text-xl font-bold text-white mb-3">
                         {item.title}
                       </h3>
                       <p className="text-white/90 text-sm mb-4 italic">
@@ -175,8 +175,8 @@ const AboutPage = () => {
                       </p>
                     </div>
                   </div>
-                  {/* Connection Line */}
-                  <div className={`absolute ${item.side === 'left' ? 'right-0' : 'left-0'} top-1/2 transform -translate-y-1/2 w-8 h-0.5 bg-gray-300`}></div>
+                  {/* Connection Line - Hidden on mobile, visible on desktop */}
+                  <div className={`hidden md:block absolute ${item.side === 'left' ? 'right-0' : 'left-0'} top-1/2 transform -translate-y-1/2 w-8 h-0.5 bg-gray-300`}></div>
                 </motion.div>
               ))}
             </div>
