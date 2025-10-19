@@ -206,10 +206,10 @@ const BrowseMentorsPage = () => {
       setFilteredMentors(allMentors);
     } else {
       const filtered = allMentors.filter(mentor =>
-        mentor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        mentor.university.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        mentor.degree.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        mentor.specialization.toLowerCase().includes(searchTerm.toLowerCase())
+        (mentor.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (mentor.university || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (mentor.degree || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (mentor.specialization || '').toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredMentors(filtered);
     }

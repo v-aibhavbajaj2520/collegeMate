@@ -85,13 +85,13 @@ const LoginPage = () => {
         let redirectPath = '/';
         
         switch (userRole) {
-          case 'admin':
+          case 'ADMIN':
             redirectPath = '/admin/dashboard';
             break;
-          case 'mentor':
+          case 'MENTOR':
             redirectPath = '/mentor/dashboard';
             break;
-          case 'user':
+          case 'USER':
             redirectPath = '/dashboard';
             break;
           default:

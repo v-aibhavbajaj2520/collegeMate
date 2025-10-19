@@ -115,10 +115,10 @@ const AdminEnrolledStudentsPage: React.FC = () => {
     // Search filter
     if (searchTerm) {
       filtered = filtered.filter(student =>
-        student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        student.college.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        student.course.toLowerCase().includes(searchTerm.toLowerCase())
+        (student.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (student.email || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (student.college || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (student.course || '').toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -363,3 +363,4 @@ const AdminEnrolledStudentsPage: React.FC = () => {
 };
 
 export default AdminEnrolledStudentsPage;
+

@@ -120,9 +120,9 @@ const AdminMentorsPage: React.FC = () => {
     // Search filter
     if (searchTerm) {
       filtered = filtered.filter(mentor =>
-        mentor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        mentor.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        mentor.specialization.toLowerCase().includes(searchTerm.toLowerCase())
+        (mentor.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (mentor.email || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (mentor.specialization || '').toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 

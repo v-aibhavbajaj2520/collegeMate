@@ -56,23 +56,23 @@ function App() {
           <Route 
             path="/dashboard/*" 
             element={
-              <ProtectedRoute allowedRoles={['user']}>
+              <ProtectedRoute allowedRoles={['USER']}>
                 <DashboardLayout />
               </ProtectedRoute>
             } 
           />
           <Route 
-            path="/mentor/dashboard" 
+            path="/mentor/dashboard/*" 
             element={
-              <ProtectedRoute allowedRoles={['mentor']}>
+              <ProtectedRoute allowedRoles={['MENTOR']}>
                 <MentorDashboard />
               </ProtectedRoute>
             } 
           />
           <Route 
-            path="/admin/dashboard" 
+            path="/admin/dashboard/*" 
             element={
-              <ProtectedRoute allowedRoles={['admin']}>
+              <ProtectedRoute allowedRoles={['ADMIN']}>
                 <AdminDashboard />
               </ProtectedRoute>
             } 

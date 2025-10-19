@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import AdminSidebar from './AdminSidebar';
 import AdminHeader from './AdminHeader';
 import AdminDashboardPage from './pages/DashboardPage';
@@ -15,39 +16,11 @@ const AdminSettings = () => <div className="p-6">Admin Settings Component</div>;
 
 const AdminLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('overview');
-
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'overview':
-        return <AdminDashboardPage />;
-      case 'bookings':
-        return <AdminBookingsPage />;
-      case 'students':
-        return <AdminEnrolledStudentsPage />;
-      case 'mentors':
-        return <AdminMentorsPage />;
-      case 'analytics':
-        return <AdminAnalytics />;
-      case 'reports':
-        return <AdminReports />;
-      case 'payments':
-        return <AdminPayments />;
-      case 'notifications':
-        return <AdminNotifications />;
-      case 'settings':
-        return <AdminSettings />;
-      default:
-        return <AdminDashboardPage />;
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Fixed Sidebar */}
       <AdminSidebar 
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
         isOpen={sidebarOpen} 
         onToggle={() => setSidebarOpen(!sidebarOpen)} 
       />
@@ -59,7 +32,18 @@ const AdminLayout: React.FC = () => {
         
         {/* Page Content */}
         <main className="flex-1">
-          {renderContent()}
+          <Routes>
+            <Route path="/" element={<Navigate to="/admin/dashboard/overview" replace />} />
+            <Route path="/overview" element={<AdminDashboardPage />} />
+            <Route path="/bookings" element={<AdminBookingsPage />} />
+            <Route path="/students" element={<AdminEnrolledStudentsPage />} />
+            <Route path="/mentors" element={<AdminMentorsPage />} />
+            <Route path="/analytics" element={<AdminAnalytics />} />
+            <Route path="/reports" element={<AdminReports />} />
+            <Route path="/payments" element={<AdminPayments />} />
+            <Route path="/notifications" element={<AdminNotifications />} />
+            <Route path="/settings" element={<AdminSettings />} />
+          </Routes>
         </main>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext';
 import { 
   MdDashboard, 
@@ -16,31 +17,28 @@ import {
 } from 'react-icons/md';
 
 interface MentorSidebarProps {
-  activeTab: string;
-  onTabChange: (tab: string) => void;
   isOpen: boolean;
   onToggle: () => void;
 }
 
 const MentorSidebar: React.FC<MentorSidebarProps> = ({ 
-  activeTab, 
-  onTabChange, 
   isOpen, 
   onToggle 
 }) => {
   const { user, logout } = useAuth();
+  const location = useLocation();
 
   const mentorMenuItems = [
-    { id: 'overview', label: 'Overview', icon: MdDashboard },
-    { id: 'students', label: 'My Students', icon: MdPeople },
-    { id: 'schedule', label: 'Schedule', icon: MdSchedule },
-    { id: 'courses', label: 'My Courses', icon: MdContentPaste },
-    { id: 'sessions', label: 'Sessions', icon: MdSchool },
-    { id: 'reviews', label: 'Reviews', icon: MdRateReview },
-    { id: 'earnings', label: 'Earnings', icon: MdPayment },
-    { id: 'analytics', label: 'Analytics', icon: MdAnalytics },
-    { id: 'notifications', label: 'Notifications', icon: MdNotifications },
-    { id: 'settings', label: 'Settings', icon: MdSettings },
+    { id: 'overview', label: 'Overview', icon: MdDashboard, path: '/mentor/dashboard/overview' },
+    { id: 'students', label: 'My Students', icon: MdPeople, path: '/mentor/dashboard/students' },
+    { id: 'schedule', label: 'Schedule', icon: MdSchedule, path: '/mentor/dashboard/schedule' },
+    { id: 'courses', label: 'My Courses', icon: MdContentPaste, path: '/mentor/dashboard/courses' },
+    { id: 'sessions', label: 'Sessions', icon: MdSchool, path: '/mentor/dashboard/sessions' },
+    { id: 'reviews', label: 'Reviews', icon: MdRateReview, path: '/mentor/dashboard/reviews' },
+    { id: 'earnings', label: 'Earnings', icon: MdPayment, path: '/mentor/dashboard/earnings' },
+    { id: 'analytics', label: 'Analytics', icon: MdAnalytics, path: '/mentor/dashboard/analytics' },
+    { id: 'notifications', label: 'Notifications', icon: MdNotifications, path: '/mentor/dashboard/notifications' },
+    { id: 'settings', label: 'Settings', icon: MdSettings, path: '/mentor/dashboard/settings' },
   ];
 
   return (
@@ -96,13 +94,15 @@ const MentorSidebar: React.FC<MentorSidebarProps> = ({
           <nav className="flex-1 px-4 py-6 space-y-2">
             {mentorMenuItems.map((item) => {
               const Icon = item.icon;
+              const isActive = location.pathname === item.path;
               return (
-                <button
+                <Link
                   key={item.id}
-                  onClick={() => onTabChange(item.id)}
+                  to={item.path}
+                  onClick={onToggle}
                   className={`
                     w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-200
-                    ${activeTab === item.id
+                    ${isActive
                       ? 'bg-gradient-to-r from-green-500 to-teal-600 text-white shadow-lg'
                       : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                     }
@@ -110,7 +110,7 @@ const MentorSidebar: React.FC<MentorSidebarProps> = ({
                 >
                   <Icon className="w-5 h-5" />
                   <span className="font-medium">{item.label}</span>
-                </button>
+                </Link>
               );
             })}
           </nav>

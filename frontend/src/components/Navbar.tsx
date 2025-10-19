@@ -8,6 +8,7 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -26,13 +27,13 @@ const Navbar = () => {
 
   // Get dashboard path based on user role
   const getDashboardPath = () => {
-    if (!user) return '/';
+    if (!user) return '/login';
     switch (user.role) {
-      case 'admin':
+      case 'ADMIN':
         return '/admin/dashboard';
-      case 'mentor':
+      case 'MENTOR':
         return '/mentor/dashboard';
-      case 'user':
+      case 'USER':
         return '/dashboard';
       default:
         return '/';
@@ -130,36 +131,13 @@ const Navbar = () => {
               <>
                 <Link to="/enroll">
                   <motion.button
-                    whileHover={{ 
-                      scale: 1.05,
-                      boxShadow: "0 10px 25px rgba(0, 102, 255, 0.3)"
-                    }}
+                    whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    animate={{
-                      background: [
-                        "linear-gradient(135deg, #0066FF 0%, #4690FE 100%)",
-                        "linear-gradient(135deg, #4690FE 0%, #0066FF 100%)",
-                        "linear-gradient(135deg, #0066FF 0%, #4690FE 100%)"
-                      ]
-                    }}
-                    transition={{
-                      background: {
-                        duration: 3,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                      }
-                    }}
-                    className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 rounded-full font-medium transition-all duration-300 shadow-lg hover:shadow-xl backdrop-blur-sm border border-white/20"
+                    className="flex items-center space-x-2 bg-[#2079FF] hover:bg-green-700 text-white px-6 py-3 rounded-full font-medium transition-all duration-300 shadow-lg"
                   >
-                    <motion.svg 
-                      className="w-5 h-5" 
-                      fill="currentColor" 
-                      viewBox="0 0 20 20"
-                      animate={{ rotate: [0, 5, -5, 0] }}
-                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    >
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 1 1 0 00.2-.38.8.8 0 01.15-.4L3.31 9.397zM6.25 13.62a8.969 8.969 0 002.18-.37l-2.18-2.18v2.55zM8.5 15.5a8.969 8.969 0 002.18-.37L8.5 13.12v2.38zM12.5 15.5a8.969 8.969 0 002.18-.37L12.5 13.12v2.38zM15 10.12l1.69-.723a1 1 0 00.2.38 1 1 0 01-.89.89 8.969 8.969 0 00-1.05.174V10.12z" />
-                    </motion.svg>
+                    </svg>
                     <span>Enroll with Us</span>
                   </motion.button>
                 </Link>
@@ -170,7 +148,9 @@ const Navbar = () => {
                     className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg"
                     title={`Go to ${user.role} dashboard`}
                   >
-                    {user.name?.charAt(0).toUpperCase() || 'U'}
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                    </svg>
                   </motion.button>
                 </Link>
               </>
@@ -286,36 +266,13 @@ const Navbar = () => {
                   </div>
                   <Link to="/enroll" onClick={() => setIsMobileMenuOpen(false)}>
                     <motion.button
-                      whileHover={{ 
-                        scale: 1.02,
-                        boxShadow: "0 10px 25px rgba(0, 102, 255, 0.3)"
-                      }}
+                      whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      animate={{
-                        background: [
-                          "linear-gradient(135deg, #0066FF 0%, #4690FE 100%)",
-                          "linear-gradient(135deg, #4690FE 0%, #0066FF 100%)",
-                          "linear-gradient(135deg, #0066FF 0%, #4690FE 100%)"
-                        ]
-                      }}
-                      transition={{
-                        background: {
-                          duration: 3,
-                          repeat: Infinity,
-                          ease: "easeInOut"
-                        }
-                      }}
-                      className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-4 rounded-lg font-medium transition-all duration-300 shadow-lg hover:shadow-xl backdrop-blur-sm border border-white/20"
+                      className="w-full flex items-center justify-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-6 py-4 rounded-lg font-medium transition-all duration-300 shadow-lg"
                     >
-                      <motion.svg 
-                        className="w-5 h-5" 
-                        fill="currentColor" 
-                        viewBox="0 0 20 20"
-                        animate={{ rotate: [0, 5, -5, 0] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                      >
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 1 1 0 00.2-.38.8.8 0 01.15-.4L3.31 9.397zM6.25 13.62a8.969 8.969 0 002.18-.37l-2.18-2.18v2.55zM8.5 15.5a8.969 8.969 0 002.18-.37L8.5 13.12v2.38zM12.5 15.5a8.969 8.969 0 002.18-.37L12.5 13.12v2.38zM15 10.12l1.69-.723a1 1 0 00.2.38 1 1 0 01-.89.89 8.969 8.969 0 00-1.05.174V10.12z" />
-                      </motion.svg>
+                      </svg>
                       <span>Enroll with Us</span>
                     </motion.button>
                   </Link>
@@ -326,7 +283,7 @@ const Navbar = () => {
                       className="w-full flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 rounded-lg font-medium transition-all duration-300 shadow-lg"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                       </svg>
                       <span>Dashboard</span>
                     </motion.button>

@@ -5,14 +5,14 @@ import AutoScroll from 'embla-carousel-auto-scroll';
 
 const PartnerColleges = () => {
   const colleges = [
-    { name: "IIT Delhi", logo: "https://via.placeholder.com/200x120/0066FF/FFFFFF?text=IIT+Delhi" },
-    { name: "IILM University", logo: "https://via.placeholder.com/200x120/0066FF/FFFFFF?text=IILM" },
-    { name: "Sharda University", logo: "https://via.placeholder.com/200x120/0066FF/FFFFFF?text=Sharda" },
-    { name: "NSUT Delhi", logo: "https://via.placeholder.com/200x120/0066FF/FFFFFF?text=NSUT" },
-    { name: "DU", logo: "https://via.placeholder.com/200x120/0066FF/FFFFFF?text=DU" },
-    { name: "JNU", logo: "https://via.placeholder.com/200x120/0066FF/FFFFFF?text=JNU" },
-    { name: "BITS Pilani", logo: "https://via.placeholder.com/200x120/0066FF/FFFFFF?text=BITS" },
-    { name: "VIT", logo: "https://via.placeholder.com/200x120/0066FF/FFFFFF?text=VIT" },
+    { name: "IIT Delhi", logo: "https://picsum.photos/200/120?random=1" },
+    { name: "IILM University", logo: "https://picsum.photos/200/120?random=2" },
+    { name: "Sharda University", logo: "https://picsum.photos/200/120?random=3" },
+    { name: "NSUT Delhi", logo: "https://picsum.photos/200/120?random=4" },
+    { name: "DU", logo: "https://picsum.photos/200/120?random=5" },
+    { name: "JNU", logo: "https://picsum.photos/200/120?random=6" },
+    { name: "BITS Pilani", logo: "https://picsum.photos/200/120?random=7" },
+    { name: "VIT", logo: "https://picsum.photos/200/120?random=8" },
   ];
 
   const [emblaRef, emblaApi] = useEmblaCarousel(

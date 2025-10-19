@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import MentorSidebar from './MentorSidebar';
 import MentorHeader from './MentorHeader';
 
@@ -16,41 +17,11 @@ const MentorSettings = () => <div className="p-6">Mentor Settings Component</div
 
 const MentorLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('overview');
-
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'overview':
-        return <MentorOverview />;
-      case 'students':
-        return <MyStudents />;
-      case 'schedule':
-        return <MentorSchedule />;
-      case 'courses':
-        return <MentorCourses />;
-      case 'sessions':
-        return <MentorSessions />;
-      case 'reviews':
-        return <MentorReviews />;
-      case 'earnings':
-        return <MentorEarnings />;
-      case 'analytics':
-        return <MentorAnalytics />;
-      case 'notifications':
-        return <MentorNotifications />;
-      case 'settings':
-        return <MentorSettings />;
-      default:
-        return <MentorOverview />;
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Fixed Sidebar */}
       <MentorSidebar 
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
         isOpen={sidebarOpen} 
         onToggle={() => setSidebarOpen(!sidebarOpen)} 
       />
@@ -62,7 +33,19 @@ const MentorLayout: React.FC = () => {
         
         {/* Page Content */}
         <main className="flex-1">
-          {renderContent()}
+          <Routes>
+            <Route path="/" element={<Navigate to="/mentor/dashboard/overview" replace />} />
+            <Route path="/overview" element={<MentorOverview />} />
+            <Route path="/students" element={<MyStudents />} />
+            <Route path="/schedule" element={<MentorSchedule />} />
+            <Route path="/courses" element={<MentorCourses />} />
+            <Route path="/sessions" element={<MentorSessions />} />
+            <Route path="/reviews" element={<MentorReviews />} />
+            <Route path="/earnings" element={<MentorEarnings />} />
+            <Route path="/analytics" element={<MentorAnalytics />} />
+            <Route path="/notifications" element={<MentorNotifications />} />
+            <Route path="/settings" element={<MentorSettings />} />
+          </Routes>
         </main>
       </div>
     </div>

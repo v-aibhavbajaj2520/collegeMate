@@ -109,10 +109,10 @@ const AdminBookingsPage: React.FC = () => {
     // Search filter
     if (searchTerm) {
       filtered = filtered.filter(booking =>
-        booking.mentorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        booking.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        booking.studentEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        booking.college.toLowerCase().includes(searchTerm.toLowerCase())
+        (booking.mentorName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (booking.studentName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (booking.studentEmail || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (booking.college || '').toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -335,3 +335,4 @@ const AdminBookingsPage: React.FC = () => {
 };
 
 export default AdminBookingsPage;
+

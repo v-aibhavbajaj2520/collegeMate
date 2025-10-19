@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext';
 import { 
   MdDashboard, 
@@ -16,30 +16,27 @@ import {
 } from 'react-icons/md';
 
 interface AdminSidebarProps {
-  activeTab: string;
-  onTabChange: (tab: string) => void;
   isOpen: boolean;
   onToggle: () => void;
 }
 
 const AdminSidebar: React.FC<AdminSidebarProps> = ({ 
-  activeTab, 
-  onTabChange, 
   isOpen, 
   onToggle 
 }) => {
   const { user, logout } = useAuth();
+  const location = useLocation();
 
   const adminMenuItems = [
-    { id: 'overview', label: 'Dashboard', icon: MdDashboard },
-    { id: 'bookings', label: 'Bookings', icon: MdCalendarToday },
-    { id: 'students', label: 'Enrolled Students', icon: MdPeople },
-    { id: 'mentors', label: 'Mentors', icon: MdSchool },
-    { id: 'analytics', label: 'Analytics', icon: MdAnalytics },
-    { id: 'reports', label: 'Reports', icon: MdReport },
-    { id: 'payments', label: 'Payments', icon: MdPayment },
-    { id: 'notifications', label: 'Notifications', icon: MdNotifications },
-    { id: 'settings', label: 'Settings', icon: MdSettings },
+    { id: 'overview', label: 'Dashboard', icon: MdDashboard, path: '/admin/dashboard/overview' },
+    { id: 'bookings', label: 'Bookings', icon: MdCalendarToday, path: '/admin/dashboard/bookings' },
+    { id: 'students', label: 'Enrolled Students', icon: MdPeople, path: '/admin/dashboard/students' },
+    { id: 'mentors', label: 'Mentors', icon: MdSchool, path: '/admin/dashboard/mentors' },
+    { id: 'analytics', label: 'Analytics', icon: MdAnalytics, path: '/admin/dashboard/analytics' },
+    { id: 'reports', label: 'Reports', icon: MdReport, path: '/admin/dashboard/reports' },
+    { id: 'payments', label: 'Payments', icon: MdPayment, path: '/admin/dashboard/payments' },
+    { id: 'notifications', label: 'Notifications', icon: MdNotifications, path: '/admin/dashboard/notifications' },
+    { id: 'settings', label: 'Settings', icon: MdSettings, path: '/admin/dashboard/settings' },
   ];
 
   return (
@@ -90,11 +87,12 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
         <nav className="flex-1 px-6 py-4 space-y-2">
           {adminMenuItems.map((item) => {
             const Icon = item.icon;
-            const isActive = activeTab === item.id;
+            const isActive = location.pathname === item.path;
             return (
-              <button
+              <Link
                 key={item.id}
-                onClick={() => onTabChange(item.id)}
+                to={item.path}
+                onClick={onToggle}
                 className={`
                   relative flex items-center px-4 py-4 rounded-xl text-sm font-medium transition-all duration-300 group
                   ${isActive 
@@ -117,7 +115,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 {isActive && (
                   <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-600/10 to-transparent"></div>
                 )}
-              </button>
+              </Link>
             );
           })}
         </nav>

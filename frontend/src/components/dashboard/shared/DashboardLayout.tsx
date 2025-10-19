@@ -10,6 +10,7 @@ import Settings from '../user/Settings';
 const DashboardLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Fixed Sidebar */}
