@@ -20,12 +20,12 @@ const DashboardLayout: React.FC = () => {
       />
       
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col overflow-hidden">
         {/* Dashboard Header */}
         <DashboardHeader onMenuClick={() => setSidebarOpen(true)} />
         
         {/* Page Content */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden">
+        <main className="flex-1 overflow-auto p-8">
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard/bookings" replace />} />
             <Route path="/bookings" element={<Bookings />} />

@@ -4,7 +4,7 @@ import { FaGraduationCap, FaPhone, FaWhatsapp } from 'react-icons/fa';
 
 const Hero = () => {
   return (
-    <section id="home" className="pt-40 pb-20 min-h-screen flex items-center relative overflow-hidden">
+    <section id="home" className="pt-32 pb-16 min-h-screen flex items-center relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
@@ -18,7 +18,7 @@ const Hero = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-3xl lg:text-5xl font-bold mb-8 leading-tight"
+            className="text-2xl lg:text-4xl font-bold mb-6 leading-tight"
           >
             <span className="text-gray-800">Smart College Choices,</span>
             <br />
@@ -30,7 +30,7 @@ const Hero = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-lg text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed font-normal"
+            className="text-base text-gray-600 mb-8 max-w-4xl mx-auto leading-relaxed font-normal"
           >
             Get authentic peer insights from current students, expert admission support, and exclusive career benefits that make you job-ready, not just college-ready.
           </motion.p>
@@ -40,14 +40,14 @@ const Hero = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="flex items-center justify-center mb-12"
+            className="flex items-center justify-center mb-8"
           >
             <div className="flex -space-x-3">
               {[1, 2, 3].map((i) => (
                 <motion.div
                   key={i}
                   whileHover={{ scale: 1.1 }}
-                  className="w-12 h-12 rounded-full border-4 border-white shadow-lg"
+                  className="w-10 h-10 rounded-full border-4 border-white shadow-lg"
                   style={{
                     backgroundImage: `url(https://i.pravatar.cc/150?u=${i})`,
                     backgroundSize: 'cover',
@@ -56,7 +56,7 @@ const Hero = () => {
                 />
               ))}
             </div>
-            <p className="ml-6 text-gray-700 font-normal">Over 500+ Alumni's as Mentors</p>
+            <p className="ml-4 text-gray-700 font-normal text-sm">Over 500+ Alumni's as Mentors</p>
           </motion.div>
 
           {/* CTA Buttons */}
@@ -70,18 +70,18 @@ const Hero = () => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="btn-primary flex items-center justify-center space-x-2 text-lg px-8 py-4"
+                className="btn-primary flex items-center justify-center space-x-2 text-base px-6 py-3"
               >
-                <FaGraduationCap className="text-xl" />
+                <FaGraduationCap className="text-lg" />
                 <span>Enroll Through Us</span>
               </motion.button>
             </Link>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="btn-outline flex items-center justify-center space-x-2 text-lg px-8 py-4"
+              className="btn-outline flex items-center justify-center space-x-2 text-base px-6 py-3"
             >
-              <FaPhone className="text-xl" />
+              <FaPhone className="text-lg" />
               <span>Book a Call</span>
             </motion.button>
           </motion.div>

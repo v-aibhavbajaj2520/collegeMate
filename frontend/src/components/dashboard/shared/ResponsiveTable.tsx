@@ -5,10 +5,15 @@ interface ResponsiveTableProps {
   className?: string;
 }
 
-const ResponsiveTable: React.FC<ResponsiveTableProps> = ({ children, className = '' }) => {
+const ResponsiveTable: React.FC<ResponsiveTableProps> = ({ children, className = "" }) => {
   return (
-    <div className={`w-full overflow-x-auto mobile-scroll ${className}`} style={{ minWidth: '100%' }}>
-      {children}
+    <div
+      className={`bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden ${className}`}
+    >
+      {/* Only this div should scroll horizontally */}
+      <div className="overflow-x-auto max-h-[70vh] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+        {children}
+      </div>
     </div>
   );
 };

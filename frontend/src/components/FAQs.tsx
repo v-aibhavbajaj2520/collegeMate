@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 
@@ -45,9 +45,9 @@ const FAQs = () => {
   ];
 
   return (
-    <section className="py-20 bg-white/50 backdrop-blur-sm">
+    <section className="py-16 bg-white/50 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -55,22 +55,22 @@ const FAQs = () => {
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl lg:text-5xl font-bold mb-6 text-[#000000]">
+            <h2 className="text-2xl lg:text-4xl font-bold mb-4 text-[#000000]">
               Frequently Asked Questions
             </h2>
-            <p className="text-lg text-gray-600 mb-8 leading-relaxed font-normal">
+            <p className="text-base text-gray-600 mb-6 leading-relaxed font-normal">
               Everything you need to know about our services, pricing, and policies. Can't find what you're looking for? Contact our support team.
             </p>
             
             {/* Filter Buttons */}
-            <div className="flex flex-wrap gap-3 mb-8">
+            <div className="flex flex-wrap gap-2 mb-6">
               {filters.map((filter) => (
                 <motion.button
                   key={filter.key}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setActiveFilter(filter.key)}
-                  className={`px-4 py-2 rounded-full font-normal transition-all duration-300 relative ${
+                  className={`px-3 py-2 rounded-full font-normal transition-all duration-300 relative text-sm ${
                     activeFilter === filter.key
                       ? 'text-white shadow-lg transform scale-105'
                       : 'text-gray-300 hover:text-white hover:scale-105'
@@ -96,19 +96,19 @@ const FAQs = () => {
             {/* Contact Support Card */}
             <motion.div
               whileHover={{ scale: 1.02 }}
-              className="p-6 rounded-2xl text-white shadow-lg"
+              className="p-4 rounded-2xl text-white shadow-lg"
               style={{
                 background: 'linear-gradient(135deg, #0066ff 0%, #192B2E 50%, #000000 100%)'
               }}
             >
-              <h3 className="text-xl font-bold mb-4 text-white">Still have questions?</h3>
-              <p className="text-gray-200 mb-6 leading-relaxed">
+              <h3 className="text-lg font-bold mb-3 text-white">Still have questions?</h3>
+              <p className="text-gray-200 mb-4 leading-relaxed text-sm">
                 Contact our support team and we'll make sure everything is clear and intuitive for you. We're here to help 24/7.
               </p>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 rounded-lg font-medium transition-colors"
+                className="px-4 py-2 rounded-lg font-medium transition-colors text-sm"
                 style={{
                   backgroundColor: '#2D9BFB',
                   color: 'white'
@@ -141,11 +141,11 @@ const FAQs = () => {
                   }}
                 >
                   <motion.div
-                    className="p-6 cursor-pointer"
+                    className="p-4 cursor-pointer"
                     onClick={() => setActiveAccordion(activeAccordion === faq.id ? null : faq.id)}
                   >
                     <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-medium text-white pr-4">{faq.question}</h3>
+                      <h3 className="text-base font-medium text-white pr-4">{faq.question}</h3>
                       <motion.div
                         animate={{ rotate: activeAccordion === faq.id ? 45 : 0 }}
                         transition={{ duration: 0.3 }}
@@ -169,8 +169,8 @@ const FAQs = () => {
                         transition={{ duration: 0.3 }}
                         className="overflow-hidden"
                       >
-                        <div className="px-6 pb-6">
-                          <p className="text-gray-200 leading-relaxed">{faq.answer}</p>
+                        <div className="px-4 pb-4">
+                          <p className="text-gray-200 leading-relaxed text-sm">{faq.answer}</p>
                         </div>
                       </motion.div>
                     )}

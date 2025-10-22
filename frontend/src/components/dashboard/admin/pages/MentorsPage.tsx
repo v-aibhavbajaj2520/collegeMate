@@ -198,51 +198,51 @@ const AdminMentorsPage: React.FC = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <MdStar className="w-5 h-5 md:w-6 md:h-6 text-white" />
+            <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+              <MdStar className="w-6 h-6 text-white" />
             </div>
-            <div className="ml-3 md:ml-4 flex-1 min-w-0">
+            <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Total Mentors</p>
-              <p className="text-xl md:text-2xl font-bold text-gray-900">{mentors.length}</p>
+              <p className="text-2xl font-bold text-gray-900">{mentors.length}</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <MdVisibility className="w-5 h-5 md:w-6 md:h-6 text-white" />
+            <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+              <MdVisibility className="w-6 h-6 text-white" />
             </div>
-            <div className="ml-3 md:ml-4 flex-1 min-w-0">
+            <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Active Mentors</p>
-              <p className="text-xl md:text-2xl font-bold text-gray-900">
+              <p className="text-2xl font-bold text-gray-900">
                 {mentors.filter(m => m.status === 'active').length}
               </p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <MdBlock className="w-5 h-5 md:w-6 md:h-6 text-white" />
+            <div className="w-12 h-12 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center">
+              <MdBlock className="w-6 h-6 text-white" />
             </div>
-            <div className="ml-3 md:ml-4 flex-1 min-w-0">
+            <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Pending Approval</p>
-              <p className="text-xl md:text-2xl font-bold text-gray-900">
+              <p className="text-2xl font-bold text-gray-900">
                 {mentors.filter(m => m.status === 'pending').length}
               </p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <MdEmail className="w-5 h-5 md:w-6 md:h-6 text-white" />
+            <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <MdEmail className="w-6 h-6 text-white" />
             </div>
-            <div className="ml-3 md:ml-4 flex-1 min-w-0">
+            <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Total Students</p>
-              <p className="text-xl md:text-2xl font-bold text-gray-900">
+              <p className="text-2xl font-bold text-gray-900">
                 {mentors.reduce((sum, mentor) => sum + mentor.totalStudents, 0)}
               </p>
             </div>
@@ -292,45 +292,44 @@ const AdminMentorsPage: React.FC = () => {
       </div>
 
       {/* Mentors Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-        <div className="p-6 border-b border-gray-200">
+      <ResponsiveTable>
+        <div className="p-4 border-b border-gray-200">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold text-gray-900">
+            <h2 className="text-lg font-semibold text-gray-900">
               Mentors ({filteredMentors.length})
             </h2>
             <div className="flex items-center space-x-2">
-              <MdFilterList className="w-5 h-5 text-gray-400" />
+              <MdFilterList className="w-4 h-4 text-gray-400" />
               <span className="text-sm text-gray-500">Filtered results</span>
             </div>
           </div>
         </div>
         
-        <ResponsiveTable>
-          <table className="w-full" style={{ minWidth: '800px' }}>
+        <table className="w-full divide-y divide-gray-200" style={{ minWidth: '800px' }}>
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Mentor
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Contact
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Specialization
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Experience
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Rating
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Students
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -351,7 +350,7 @@ const AdminMentorsPage: React.FC = () => {
               ) : (
                 filteredMentors.map((mentor) => (
                   <tr key={mentor.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 py-3 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
                           {mentor.name.split(' ').map(n => n[0]).join('')}
@@ -362,7 +361,7 @@ const AdminMentorsPage: React.FC = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 py-3 whitespace-nowrap">
                       <div>
                         <div className="flex items-center text-sm text-gray-900">
                           <MdEmail className="w-4 h-4 mr-2 text-gray-400" />
@@ -380,7 +379,7 @@ const AdminMentorsPage: React.FC = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {mentor.experience} years
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 py-3 whitespace-nowrap">
                       <div className="flex items-center">
                         <MdStar className="w-4 h-4 text-yellow-400 mr-1" />
                         <span className="text-sm text-gray-900">{mentor.rating}</span>
@@ -389,7 +388,7 @@ const AdminMentorsPage: React.FC = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {mentor.totalStudents}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 py-3 whitespace-nowrap">
                       {getStatusBadge(mentor.status)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -419,8 +418,7 @@ const AdminMentorsPage: React.FC = () => {
               )}
             </tbody>
           </table>
-        </ResponsiveTable>
-      </div>
+      </ResponsiveTable>
 
       {/* Add Mentor Modal - Placeholder */}
       {showAddModal && (

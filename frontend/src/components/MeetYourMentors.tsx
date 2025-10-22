@@ -85,19 +85,19 @@ const MeetYourMentors = () => {
   ];
 
   return (
-    <section id="mentors" className="py-20 backdrop-blur-sm">
+    <section id="mentors" className="py-16 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <h2 className="text-3xl lg:text-5xl font-bold mb-6 text-[#000000]">
+          <h2 className="text-2xl lg:text-4xl font-bold mb-4 text-[#000000]">
             Meet Your Mentors
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto font-normal">
+          <p className="text-base text-gray-600 max-w-2xl mx-auto font-normal">
             Connect with current students and recent graduates who can guide you through your college journey
           </p>
         </motion.div>
@@ -108,7 +108,7 @@ const MeetYourMentors = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
           viewport={{ once: true }}
-          className="flex flex-wrap justify-center gap-4 mb-12"
+          className="flex flex-wrap justify-center gap-3 mb-8"
         >
           {filters.map((filter) => (
             <motion.button
@@ -116,14 +116,14 @@ const MeetYourMentors = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setActiveFilter(filter.key)}
-              className={`px-6 py-3 rounded-full font-normal transition-all duration-300 ${
+              className={`px-4 py-2 rounded-full font-normal transition-all duration-300 text-sm ${
                 activeFilter === filter.key
                   ? 'bg-blue-600 text-white shadow-lg'
                   : 'bg-white text-gray-700 hover:bg-gray-100 shadow-md'
               }`}
             >
               {filter.label}
-              <span className="ml-2 text-sm opacity-75">({filter.count})</span>
+              <span className="ml-2 text-xs opacity-75">({filter.count})</span>
             </motion.button>
           ))}
         </motion.div>
@@ -131,7 +131,7 @@ const MeetYourMentors = () => {
         {/* Mentor Cards */}
         <motion.div
           layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"
         >
           {filteredMentors.map((mentor, index) => (
             <motion.div
@@ -147,14 +147,14 @@ const MeetYourMentors = () => {
               <hr className="border-gray-600" />
               
               {/* Mentor Image */}
-              <div className="relative h-48 flex items-center justify-center p-6">
+              <div className="relative h-36 flex items-center justify-center p-4">
                 <motion.img
                   src={mentor.image}
                   alt={mentor.name}
-                  className="w-[90%] h-36 rounded-lg object-cover shadow-lg border-[1px] border-white mx-auto"
+                  className="w-[90%] h-28 rounded-lg object-cover shadow-lg border-[1px] border-white mx-auto"
                   whileHover={{ scale: 1.05 }}
                 />
-                <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full">
+                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full">
                   <div className="flex items-center space-x-1">
                     <FaStar className="text-yellow-400 text-xs" />
                     <span className="text-xs font-medium">{mentor.rating}</span>
@@ -166,23 +166,23 @@ const MeetYourMentors = () => {
               <hr className="border-gray-600" />
 
               {/* Mentor Info */}
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-white mb-2">{mentor.name}</h3>
+              <div className="p-4">
+                <h3 className="text-lg font-bold text-white mb-2">{mentor.name}</h3>
                 <div className="flex items-center text-blue-400 mb-2">
                   <FaGraduationCap className="text-sm mr-2" />
                   <span className="text-sm font-normal">{mentor.university}</span>
                 </div>
-                <p className="text-gray-300 text-sm font-normal mb-3">{mentor.degree}</p>
-                <p className="text-gray-400 text-xs font-normal mb-4">
+                <p className="text-gray-300 text-sm font-normal mb-2">{mentor.degree}</p>
+                <p className="text-gray-400 text-xs font-normal mb-3">
                   {mentor.experience} experience • {mentor.specialization}
                 </p>
                 
                 {/* Rating */}
-                <div className="flex items-center mb-4">
+                <div className="flex items-center mb-3">
                   {[...Array(5)].map((_, i) => (
                     <FaStar
                       key={i}
-                      className={`text-sm ${
+                      className={`text-xs ${
                         i < Math.floor(mentor.rating)
                           ? 'text-yellow-400'
                           : i < mentor.rating
@@ -191,14 +191,14 @@ const MeetYourMentors = () => {
                       }`}
                     />
                   ))}
-                  <span className="ml-2 text-sm text-gray-300">({mentor.rating})</span>
+                  <span className="ml-2 text-xs text-gray-300">({mentor.rating})</span>
                 </div>
 
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleViewProfile(mentor)}
-                  className="w-full btn-primary"
+                  className="w-full btn-primary text-sm py-2"
                 >
                   Click to Know More
                 </motion.button>
@@ -219,7 +219,7 @@ const MeetYourMentors = () => {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="btn-outline text-lg px-8 py-4"
+              className="btn-outline text-base px-6 py-3"
             >
               View All Mentors
             </motion.button>

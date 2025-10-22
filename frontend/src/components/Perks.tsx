@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 const Perks = () => {
@@ -50,7 +50,7 @@ const Perks = () => {
   ];
 
   return (
-    <section className="py-20 relative overflow-hidden">
+    <section className="py-16 relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
@@ -63,17 +63,17 @@ const Perks = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <h2 className="text-3xl lg:text-5xl font-bold mb-6 text-[#000000]">
+          <h2 className="text-2xl lg:text-4xl font-bold mb-4 text-[#000000]">
             Your Perks Inside
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto font-normal">
+          <p className="text-base text-gray-600 max-w-2xl mx-auto font-normal">
             Hover over the cards to discover the amazing benefits waiting for you
           </p>
         </motion.div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {perks.map((perk, index) => (
             <motion.div
               key={index}
@@ -89,7 +89,7 @@ const Perks = () => {
             >
               <motion.div
                 whileHover={{ y: -8 }}
-                className="bg-[#2E3031] p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 relative overflow-hidden h-[300px] flex flex-col"
+                className="bg-[#2E3031] p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 relative overflow-hidden h-[240px] flex flex-col"
               >
                 {/* Animated Background Elements */}
                 <div className="absolute inset-0 opacity-5">
@@ -137,7 +137,7 @@ const Perks = () => {
                       repeat: Infinity,
                       ease: "easeInOut"
                     }}
-                    className="text-6xl mb-4 filter drop-shadow-lg"
+                    className="text-4xl mb-3 filter drop-shadow-lg"
                   >
                     🔒
                   </motion.div>
@@ -146,7 +146,7 @@ const Perks = () => {
                   <motion.h3
                     animate={{ opacity: [0.7, 1, 0.7] }}
                     transition={{ duration: 2, repeat: Infinity }}
-                    className="text-xl font-bold text-white mb-2"
+                    className="text-lg font-bold text-white mb-2"
                   >
                     {perk.title}
                   </motion.h3>
@@ -154,7 +154,7 @@ const Perks = () => {
                   <motion.p
                     animate={{ opacity: [0.6, 0.9, 0.6] }}
                     transition={{ duration: 1.5, repeat: Infinity }}
-                    className="text-sm text-gray-300 font-normal mb-4"
+                    className="text-xs text-gray-300 font-normal mb-3"
                   >
                     {perk.description}
                   </motion.p>
@@ -168,7 +168,7 @@ const Perks = () => {
                     transition={{ duration: 1.5, repeat: Infinity }}
                     className="flex items-center space-x-2 text-blue-400"
                   >
-                    <span className="text-sm font-normal">Hover to discover more</span>
+                    <span className="text-xs font-normal">Hover to discover more</span>
                     <motion.span
                       animate={{ x: [0, 5, 0] }}
                       transition={{ duration: 1, repeat: Infinity }}
@@ -203,7 +203,7 @@ const Perks = () => {
                       rotate: hoveredCard === index ? 0 : -180
                     }}
                     transition={{ duration: 0.5, delay: 0.1 }}
-                    className="text-6xl mb-4 filter drop-shadow-lg"
+                    className="text-4xl mb-3 filter drop-shadow-lg"
                   >
                     {perk.icon}
                   </motion.div>
@@ -215,7 +215,7 @@ const Perks = () => {
                       opacity: hoveredCard === index ? 1 : 0
                     }}
                     transition={{ duration: 0.3, delay: 0.2 }}
-                    className="text-2xl font-bold text-white mb-3"
+                    className="text-lg font-bold text-white mb-2"
                   >
                     {perk.title}
                   </motion.h3>
@@ -227,7 +227,7 @@ const Perks = () => {
                       opacity: hoveredCard === index ? 1 : 0
                     }}
                     transition={{ duration: 0.3, delay: 0.3 }}
-                    className="text-gray-300 text-sm leading-relaxed font-normal"
+                    className="text-gray-300 text-xs leading-relaxed font-normal"
                   >
                     {perk.details}
                   </motion.p>

@@ -33,9 +33,9 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
     { id: 'students', label: 'Enrolled Students', icon: MdPeople, path: '/admin/dashboard/students' },
     { id: 'mentors', label: 'Mentors', icon: MdSchool, path: '/admin/dashboard/mentors' },
     { id: 'analytics', label: 'Analytics', icon: MdAnalytics, path: '/admin/dashboard/analytics' },
-    { id: 'reports', label: 'Reports', icon: MdReport, path: '/admin/dashboard/reports' },
+    // { id: 'reports', label: 'Reports', icon: MdReport, path: '/admin/dashboard/reports' },
     { id: 'payments', label: 'Payments', icon: MdPayment, path: '/admin/dashboard/payments' },
-    { id: 'notifications', label: 'Notifications', icon: MdNotifications, path: '/admin/dashboard/notifications' },
+    // { id: 'notifications', label: 'Notifications', icon: MdNotifications, path: '/admin/dashboard/notifications' },
     { id: 'settings', label: 'Settings', icon: MdSettings, path: '/admin/dashboard/settings' },
   ];
 
@@ -50,15 +50,15 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
       )}
 
       {/* Sidebar */}
-      <div
-        className={`
-          fixed lg:static inset-y-0 left-0 z-50 w-72
-          bg-[#172234] shadow-2xl
-          flex flex-col
-          ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-          transition-transform duration-300 ease-in-out
-        `}
-      >
+          <div
+            className={`
+              fixed lg:static inset-y-0 left-0 z-50 w-64
+              bg-[#172234] shadow-2xl
+              flex flex-col
+              ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+              transition-transform duration-300 ease-in-out
+            `}
+          >
         {/* Logo Section */}
         <div className="flex items-center justify-center h-20 px-6 border-b border-gray-700">
           <img 

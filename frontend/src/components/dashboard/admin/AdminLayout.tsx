@@ -8,10 +8,10 @@ import AdminEnrolledStudentsPage from './pages/EnrolledStudentsPage';
 import AdminMentorsPage from './pages/MentorsPage';
 
 // Additional admin components (you can create these later)
-const AdminReports = () => <div className="p-6">Admin Reports Component</div>;
+// const AdminReports = () => <div className="p-6">Admin Reports Component</div>;
 const AdminAnalytics = () => <div className="p-6">Admin Analytics Component</div>;
 const AdminPayments = () => <div className="p-6">Admin Payments Component</div>;
-const AdminNotifications = () => <div className="p-6">Admin Notifications Component</div>;
+// const AdminNotifications = () => <div className="p-6">Admin Notifications Component</div>;
 const AdminSettings = () => <div className="p-6">Admin Settings Component</div>;
 
 const AdminLayout: React.FC = () => {
@@ -26,12 +26,12 @@ const AdminLayout: React.FC = () => {
       />
       
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col overflow-hidden">
         {/* Admin Header */}
         <AdminHeader onMenuClick={() => setSidebarOpen(true)} />
         
         {/* Page Content */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden">
+        <main className="flex-1 overflow-auto">
           <Routes>
             <Route path="/" element={<Navigate to="/admin/dashboard/overview" replace />} />
             <Route path="/overview" element={<AdminDashboardPage />} />
@@ -39,9 +39,9 @@ const AdminLayout: React.FC = () => {
             <Route path="/students" element={<AdminEnrolledStudentsPage />} />
             <Route path="/mentors" element={<AdminMentorsPage />} />
             <Route path="/analytics" element={<AdminAnalytics />} />
-            <Route path="/reports" element={<AdminReports />} />
+            {/* <Route path="/reports" element={<AdminReports />} /> */}
             <Route path="/payments" element={<AdminPayments />} />
-            <Route path="/notifications" element={<AdminNotifications />} />
+            {/* <Route path="/notifications" element={<AdminNotifications />} /> */}
             <Route path="/settings" element={<AdminSettings />} />
           </Routes>
         </main>

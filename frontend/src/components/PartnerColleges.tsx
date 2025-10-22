@@ -34,7 +34,7 @@ const PartnerColleges = () => {
   );
 
   return (
-    <section className="py-32 relative overflow-hidden">
+    <section className="py-16 relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute inset-0" style={{
@@ -48,12 +48,12 @@ const PartnerColleges = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="text-center mb-20"
+          className="text-center mb-12"
         >
-          <h2 className="text-4xl lg:text-6xl font-bold mb-1 text-[#000000]">
+          <h2 className="text-2xl lg:text-4xl font-bold mb-2 text-[#000000]">
             Partner Colleges
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto font-normal">
+          <p className="text-base text-gray-600 max-w-3xl mx-auto font-normal">
             Trusted by students from top universities across India
           </p>
         </motion.div>
@@ -72,17 +72,17 @@ const PartnerColleges = () => {
               <motion.div
                 key={`${college.name}-${index}`}
                 whileHover={{ scale: 1.05, y: -8 }}
-                className="bg-white/20 backdrop-blur-md p-8 min-w-[280px] h-[200px] text-center rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col justify-center items-center border border-white/30"
+                className="bg-white/20 backdrop-blur-md p-4 min-w-[200px] h-[140px] text-center rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col justify-center items-center border border-white/30"
               >
-                <div className="mb-6 w-full h-16 flex items-center justify-center">
+                <div className="mb-3 w-full h-12 flex items-center justify-center">
                   <img 
                     src={college.logo} 
                     alt={college.name}
                     className="max-w-full max-h-full object-contain"
                   />
                 </div>
-                <h3 className="text-lg font-bold mb-2 text-gray-900">{college.name}</h3>
-                <div className="w-12 h-1 bg-gradient-to-r from-[#0066FF] to-[#4690FE] rounded-full mx-auto"></div>
+                <h3 className="text-base font-bold mb-2 text-gray-900">{college.name}</h3>
+                <div className="w-8 h-1 bg-gradient-to-r from-[#0066FF] to-[#4690FE] rounded-full mx-auto"></div>
               </motion.div>
             ))}
           </motion.div>

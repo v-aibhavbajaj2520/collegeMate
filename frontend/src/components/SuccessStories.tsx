@@ -60,7 +60,7 @@ const SuccessStories = () => {
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-br from-blue-50 to-purple-50 relative overflow-hidden">
+    <section className="py-16 bg-gradient-to-br from-blue-50 to-purple-50 relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-20 w-64 h-64 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
@@ -73,12 +73,12 @@ const SuccessStories = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <h2 className="text-3xl lg:text-5xl font-bold mb-6 text-[#000000]">
+          <h2 className="text-2xl lg:text-4xl font-bold mb-4 text-[#000000]">
             Success Stories
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto font-normal">
+          <p className="text-base text-gray-600 max-w-2xl mx-auto font-normal">
             Hear from students who made it to their dream companies and universities
           </p>
         </motion.div>
@@ -104,7 +104,7 @@ const SuccessStories = () => {
               <motion.div
                 key={`top-${testimonial.name}-${index}`}
                 whileHover={{ scale: 1.05, y: -5 }}
-                className="p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 w-[300px] h-[300px] flex-shrink-0 text-white"
+                className="p-4 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 w-[240px] h-[220px] flex-shrink-0 text-white"
                 style={{
                   background: 'linear-gradient(135deg, #0066ff 0%, #192B2E 50%, #000000 100%)'
                 }}
@@ -113,20 +113,20 @@ const SuccessStories = () => {
                   <img
                     src={testimonial.image}
                     alt={testimonial.name}
-                    className="w-20 h-20 rounded-full object-cover border-2 border-white/20 mb-4"
+                    className="w-12 h-12 rounded-full object-cover border-2 border-white/20 mb-2"
                   />
                   <div className="flex-1 flex flex-col justify-center">
-                    <div className="flex items-center justify-center space-x-2 mb-2">
-                      <h4 className="font-bold text-white">{testimonial.name}</h4>
+                    <div className="flex items-center justify-center space-x-1 mb-1">
+                      <h4 className="font-bold text-white text-sm">{testimonial.name}</h4>
                       <div className="flex">
                         {[...Array(testimonial.rating)].map((_, i) => (
-                          <span key={i} className="text-yellow-300">⭐</span>
+                          <span key={i} className="text-yellow-300 text-xs">⭐</span>
                         ))}
                       </div>
                     </div>
-                    <p className="text-sm text-blue-300 font-normal mb-1">{testimonial.title} at {testimonial.company}</p>
-                    <p className="text-xs text-gray-300 font-normal mb-3">Alumni of {testimonial.university}</p>
-                    <p className="text-gray-200 text-sm leading-relaxed">"{testimonial.quote}"</p>
+                    <p className="text-xs text-blue-300 font-normal mb-1">{testimonial.title} at {testimonial.company}</p>
+                    <p className="text-xs text-gray-300 font-normal mb-2">Alumni of {testimonial.university}</p>
+                    <p className="text-gray-200 text-xs leading-relaxed">"{testimonial.quote}"</p>
                   </div>
                 </div>
               </motion.div>
@@ -155,7 +155,7 @@ const SuccessStories = () => {
               <motion.div
                 key={`bottom-${testimonial.name}-${index}`}
                 whileHover={{ scale: 1.05, y: -5 }}
-                className="p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 w-[300px] h-[300px] flex-shrink-0 text-white"
+                className="p-4 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 w-[240px] h-[220px] flex-shrink-0 text-white"
                 style={{
                   background: 'linear-gradient(135deg, #0066ff 0%, #192B2E 50%, #000000 100%)'
                 }}
@@ -164,20 +164,20 @@ const SuccessStories = () => {
                   <img
                     src={testimonial.image}
                     alt={testimonial.name}
-                    className="w-20 h-20 rounded-full object-cover border-2 border-white/20 mb-4"
+                    className="w-12 h-12 rounded-full object-cover border-2 border-white/20 mb-2"
                   />
                   <div className="flex-1 flex flex-col justify-center">
-                    <div className="flex items-center justify-center space-x-2 mb-2">
-                      <h4 className="font-bold text-white">{testimonial.name}</h4>
+                    <div className="flex items-center justify-center space-x-1 mb-1">
+                      <h4 className="font-bold text-white text-sm">{testimonial.name}</h4>
                       <div className="flex">
                         {[...Array(testimonial.rating)].map((_, i) => (
-                          <span key={i} className="text-yellow-300">⭐</span>
+                          <span key={i} className="text-yellow-300 text-xs">⭐</span>
                         ))}
                       </div>
                     </div>
-                    <p className="text-sm text-blue-300 font-normal mb-1">{testimonial.title} at {testimonial.company}</p>
-                    <p className="text-xs text-gray-300 font-normal mb-3">Alumni of {testimonial.university}</p>
-                    <p className="text-gray-200 text-sm leading-relaxed">"{testimonial.quote}"</p>
+                    <p className="text-xs text-blue-300 font-normal mb-1">{testimonial.title} at {testimonial.company}</p>
+                    <p className="text-xs text-gray-300 font-normal mb-2">Alumni of {testimonial.university}</p>
+                    <p className="text-gray-200 text-xs leading-relaxed">"{testimonial.quote}"</p>
                   </div>
                 </div>
               </motion.div>
@@ -191,7 +191,7 @@ const SuccessStories = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
           viewport={{ once: true }}
-          className="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 text-center"
+          className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6 text-center"
         >
           {[
             { number: "1000+", label: "Success Stories", icon: "🎉" },
@@ -202,11 +202,11 @@ const SuccessStories = () => {
             <motion.div
               key={stat.label}
               whileHover={{ scale: 1.05 }}
-              className="bg-white/80 backdrop-blur-sm p-4 md:p-6 rounded-2xl shadow-lg"
+              className="bg-white/80 backdrop-blur-sm p-4 rounded-2xl shadow-lg"
             >
-              <div className="text-3xl md:text-4xl mb-3 md:mb-4">{stat.icon}</div>
-              <div className="text-2xl md:text-3xl font-bold text-blue-600 mb-2">{stat.number}</div>
-              <div className="text-sm md:text-base text-gray-600 font-medium">{stat.label}</div>
+              <div className="text-2xl mb-2">{stat.icon}</div>
+              <div className="text-xl font-bold text-blue-600 mb-1">{stat.number}</div>
+              <div className="text-gray-600 font-medium text-sm">{stat.label}</div>
             </motion.div>
           ))}
         </motion.div>
