@@ -1,7 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import useEmblaCarousel from 'embla-carousel-react';
-import AutoScroll from 'embla-carousel-auto-scroll';
 
 const PartnerColleges = () => {
   const colleges = [
@@ -15,23 +12,6 @@ const PartnerColleges = () => {
     { name: "VIT", logo: "https://picsum.photos/200/120?random=8" },
   ];
 
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    { 
-      loop: true,
-      align: 'start',
-      skipSnaps: false,
-      dragFree: true
-    },
-    [AutoScroll({ 
-      speed: 1,
-      startDelay: 1000,
-      direction: 'forward',
-      playOnInit: true,
-      stopOnInteraction: false,
-      stopOnMouseEnter: false,
-      stopOnFocusIn: false
-    })]
-  );
 
   return (
     <section className="py-16 relative overflow-hidden">

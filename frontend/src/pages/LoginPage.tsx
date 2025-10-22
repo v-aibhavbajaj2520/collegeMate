@@ -40,7 +40,7 @@ const LoginPage = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/login`, {
         email: formData.email,
         password: formData.password
       });
@@ -69,7 +69,7 @@ const LoginPage = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/verify-login-otp', {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/verify-login-otp`, {
         email: formData.email,
         otp: otp
       });
@@ -118,7 +118,7 @@ const LoginPage = () => {
 
     try {
       // Resend login request to get new OTP
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/login`, {
         email: formData.email,
         password: formData.password
       });
@@ -157,7 +157,7 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/forgot-password', {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/forgot-password`, {
         email: formData.email
       });
 

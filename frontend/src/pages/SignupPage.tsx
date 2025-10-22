@@ -72,7 +72,7 @@ const SignupPage = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/signup', {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/signup`, {
         name: formData.fullName,
         email: formData.email,
         password: formData.password
@@ -102,7 +102,7 @@ const SignupPage = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/verify-otp', {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/verify-otp`, {
         email: formData.email,
         otp: otp
       });
@@ -150,7 +150,7 @@ const SignupPage = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/resend-otp', {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/resend-otp`, {
         email: formData.email
       });
 

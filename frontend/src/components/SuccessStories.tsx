@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 
 const SuccessStories = () => {
@@ -198,7 +197,7 @@ const SuccessStories = () => {
             { number: "95%", label: "Placement Rate", icon: "📈" },
             { number: "50+", label: "Top Companies", icon: "🏢" },
             { number: "4.9/5", label: "Student Rating", icon: "⭐" }
-          ].map((stat, index) => (
+          ].map((stat) => (
             <motion.div
               key={stat.label}
               whileHover={{ scale: 1.05 }}

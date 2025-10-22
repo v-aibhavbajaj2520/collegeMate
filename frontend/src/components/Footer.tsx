@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 
 const Footer = () => {
@@ -77,7 +76,7 @@ const Footer = () => {
 
               {/* Social Media Links */}
               <div className="flex space-x-4">
-                {socialLinks.map((social, index) => (
+                {socialLinks.map((social) => (
                   <motion.a
                     key={social.name}
                     href={social.href}
@@ -102,7 +101,7 @@ const Footer = () => {
               >
                 <h4 className="text-lg font-bold mb-6 capitalize">{category}</h4>
                 <ul className="space-y-3">
-                  {links.map((link, index) => (
+                  {links.map((link) => (
                     <motion.li
                       key={link}
                       whileHover={{ x: 5 }}

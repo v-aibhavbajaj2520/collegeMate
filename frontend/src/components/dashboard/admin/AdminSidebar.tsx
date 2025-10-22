@@ -8,9 +8,6 @@ import {
   MdAnalytics, 
   MdSettings, 
   MdLogout,
-  MdClose,
-  MdNotifications,
-  MdReport,
   MdPayment,
   MdCalendarToday
 } from 'react-icons/md';
