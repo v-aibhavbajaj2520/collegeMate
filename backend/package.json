@@ -23,7 +23,8 @@
     "firebase-admin": "^13.5.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.1",
-    "nodemailer": "^7.0.9"
+    "nodemailer": "^7.0.9",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",

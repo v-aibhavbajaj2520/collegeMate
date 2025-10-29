@@ -3,7 +3,7 @@ import cors from 'cors';
 import { prisma } from './prisma.js';
 import authRoutes from './routes/auth.js';
 import notificationRoutes from './routes/notifications.js';
-import enrollmentRoutes from './routes/enrollments.js';
+// import enrollmentRoutes from './routes/enrollments.js';
 import { cleanupExpiredOTPs } from './services/cleanup.js';
 
 const app = express();
@@ -31,7 +31,7 @@ app.get('/api/health', (req, res) => res.json({ status: 'OK', timestamp: new Dat
 
 app.use('/api/auth', authRoutes);
 app.use('/api/notifications', notificationRoutes);
-app.use('/api/enrollments', enrollmentRoutes);
+// app.use('/api/enrollments', enrollmentRoutes);
 
 // Error handler
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
