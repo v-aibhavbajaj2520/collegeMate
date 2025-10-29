@@ -23,6 +23,19 @@ enum SlotStatus {
   BOOKED
 }
 
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum CartItemStatus {
+  ACTIVE
+  CHECKED_OUT
+  EXPIRED
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String
@@ -30,6 +43,11 @@ model User {
   password      String?   // Nullable for Google OAuth users
   role          Role      @default(USER)
   isVerified    Boolean   @default(false)
+  
+  // Mentor specific fields
+  pricePerSlot  Float?    // Price for 30-minute slot (only for mentors)
+  bio           String?   // Mentor bio/description
+  expertise     String[]  // Array of expertise areas
   
   // OTP for login/signup verification
   otp           String?
@@ -48,6 +66,8 @@ model User {
   mentorSlots         Slot[]         @relation("MentorSlots")
   studentBookings     Booking[]      @relation("StudentBookings")
   mentorBookings      Booking[]      @relation("MentorBookings")
+  cart                Cart?
+  cartItems           CartItem[]
 
   @@index([email])
   @@index([role])
@@ -61,6 +81,7 @@ model Slot {
   startTime    String      // Format: "HH:MM" (e.g., "13:00")
   endTime      String      // Format: "HH:MM" (e.g., "13:30")
   status       SlotStatus  @default(CLOSED)
+  price        Float       // Price for this specific slot (captured at slot creation) (for now same as it is mentor profile price)
   
   // Timestamps
   createdAt    DateTime    @default(now())
@@ -68,6 +89,7 @@ model Slot {
 
   // Relations
   booking      Booking?
+  cartItems    CartItem[]
 
   @@unique([mentorId, date, startTime]) // Ensure no duplicate slots for same mentor at same time
   @@index([mentorId])
@@ -77,29 +99,85 @@ model Slot {
 }
 
 model Booking {
-  id          String    @id @default(cuid())
-  slotId      String    @unique // One-to-one with Slot
-  slot        Slot      @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  id          String        @id @default(cuid())
+  slotId      String        @unique // One-to-one with Slot
+  slot        Slot          @relation(fields: [slotId], references: [id], onDelete: Cascade)
   
   studentId   String
-  student     User      @relation("StudentBookings", fields: [studentId], references: [id], onDelete: Cascade)
+  student     User          @relation("StudentBookings", fields: [studentId], references: [id], onDelete: Cascade)
   
   mentorId    String
-  mentor      User      @relation("MentorBookings", fields: [mentorId], references: [id], onDelete: Cascade)
+  mentor      User          @relation("MentorBookings", fields: [mentorId], references: [id], onDelete: Cascade)
   
   // Booking details
-  date        DateTime  @db.Date
-  startTime   String    // Format: "HH:MM"
-  endTime     String    // Format: "HH:MM"
+  date        DateTime      @db.Date
+  startTime   String        // Format: "HH:MM"
+  endTime     String        // Format: "HH:MM"
+  price       Float         // Price at the time of booking (immutable)
+  status      BookingStatus @default(PENDING)
+  
+  // Payment details (optional)
+  paymentId   String?       // Reference to payment gateway transaction
+  paidAt      DateTime?
   
   // Timestamps
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 
   @@index([studentId])
   @@index([mentorId])
   @@index([date])
+  @@index([status])
+  @@index([studentId, date, startTime]) // Help enforce max 2 bookings per time slot
   @@index([mentorId, date, startTime]) // Prevent double booking
+}
+
+model Cart {
+  id        String     @id @default(cuid())
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Timestamps
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  // Relations
+  items     CartItem[]
+
+  @@index([userId])
+}
+
+model CartItem {
+  id        String         @id @default(cuid())
+  cartId    String
+  cart      Cart           @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  
+  userId    String
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  slotId    String
+  slot      Slot           @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  
+  // Cached data for quick access
+  mentorId  String         // Denormalized for quick queries
+  date      DateTime       @db.Date
+  startTime String
+  endTime   String
+  price     Float          // Price at the time of adding to cart
+  
+  status    CartItemStatus @default(ACTIVE)
+  expiresAt DateTime?      // Optional: cart items can expire after X minutes
+  
+  // Timestamps
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@unique([cartId, slotId]) // User can't add same slot twice to cart
+  @@index([cartId])
+  @@index([userId])
+  @@index([slotId])
+  @@index([status])
+  @@index([userId, date, startTime]) // Help enforce max 2 bookings per time slot
 }
 
 model Notification {
