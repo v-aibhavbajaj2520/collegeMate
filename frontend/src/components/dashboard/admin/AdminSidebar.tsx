@@ -9,7 +9,9 @@ import {
   MdSettings, 
   MdLogout,
   MdPayment,
-  MdCalendarToday
+  MdCalendarToday,
+  MdLibraryBooks,
+  MdAttachMoney
 } from 'react-icons/md';
 
 interface AdminSidebarProps {
@@ -29,6 +31,8 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
     { id: 'bookings', label: 'Bookings', icon: MdCalendarToday, path: '/admin/dashboard/bookings' },
     { id: 'students', label: 'Enrolled Students', icon: MdPeople, path: '/admin/dashboard/students' },
     { id: 'mentors', label: 'Mentors', icon: MdSchool, path: '/admin/dashboard/mentors' },
+    { id: 'pricings', label: 'Pricings', icon: MdAttachMoney, path: '/admin/dashboard/pricings' },
+    { id: 'colleges-courses', label: 'Colleges & Courses', icon: MdLibraryBooks, path: '/admin/dashboard/colleges-courses' },
     { id: 'analytics', label: 'Analytics', icon: MdAnalytics, path: '/admin/dashboard/analytics' },
     // { id: 'reports', label: 'Reports', icon: MdReport, path: '/admin/dashboard/reports' },
     { id: 'payments', label: 'Payments', icon: MdPayment, path: '/admin/dashboard/payments' },

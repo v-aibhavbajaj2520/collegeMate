@@ -31,30 +31,12 @@ interface MentorProfileModalProps {
 const MentorProfileModal: React.FC<MentorProfileModalProps> = ({ isOpen, onClose, mentor }) => {
   if (!mentor) return null;
 
-  // Default data for missing fields
+  // Use actual mentor data, show empty state if not available
   const mentorData = {
     about: mentor.about || `Experienced ${mentor.specialization} professional with ${mentor.experience} of industry experience. Passionate about helping students achieve their academic and career goals through personalized mentorship.`,
-    achievements: mentor.achievements || [
-      "Published 5 research papers in top-tier journals",
-      "Led 3 successful startup projects",
-      "Mentored 50+ students to successful placements",
-      "Awarded 'Best Mentor' by University 2023"
-    ],
-    skills: mentor.skills || [
-      "Web Development",
-      "Machine Learning",
-      "Data Structures & Algorithms",
-      "Project Management",
-      "Team Leadership",
-      "Technical Writing"
-    ],
-    hobbies: mentor.hobbies || [
-      "Photography",
-      "Chess",
-      "Hiking",
-      "Reading Tech Blogs",
-      "Cooking"
-    ],
+    achievements: mentor.achievements || [],
+    skills: mentor.skills || [],
+    hobbies: mentor.hobbies || [],
     title: mentor.title || `${mentor.specialization} Expert`,
     universityCredentials: mentor.universityCredentials || `${mentor.degree} from ${mentor.university}`
   };
@@ -197,14 +179,18 @@ const MentorProfileModal: React.FC<MentorProfileModalProps> = ({ isOpen, onClose
                           className="bg-white/10 backdrop-blur-sm rounded-2xl p-6"
                         >
                           <h3 className="text-xl font-bold text-white mb-4">Achievements</h3>
-                          <ol className="space-y-2">
-                            {mentorData.achievements.map((achievement, index) => (
-                              <li key={index} className="text-white/90 text-sm flex items-start">
-                                <span className="text-blue-300 font-bold mr-2">{index + 1}.</span>
-                                {achievement}
-                              </li>
-                            ))}
-                          </ol>
+                          {mentorData.achievements.length > 0 ? (
+                            <ol className="space-y-2">
+                              {mentorData.achievements.map((achievement, index) => (
+                                <li key={index} className="text-white/90 text-sm flex items-start">
+                                  <span className="text-blue-300 font-bold mr-2">{index + 1}.</span>
+                                  {achievement}
+                                </li>
+                              ))}
+                            </ol>
+                          ) : (
+                            <p className="text-white/60 text-sm italic">No achievements added yet.</p>
+                          )}
                         </motion.div>
 
                         {/* Skills */}
@@ -215,14 +201,18 @@ const MentorProfileModal: React.FC<MentorProfileModalProps> = ({ isOpen, onClose
                           className="bg-white/10 backdrop-blur-sm rounded-2xl p-6"
                         >
                           <h3 className="text-xl font-bold text-white mb-4">Skills</h3>
-                          <ul className="space-y-2">
-                            {mentorData.skills.map((skill, index) => (
-                              <li key={index} className="text-white/90 text-sm flex items-center">
-                                <span className="text-blue-300 mr-2">•</span>
-                                {skill}
-                              </li>
-                            ))}
-                          </ul>
+                          {mentorData.skills.length > 0 ? (
+                            <ul className="space-y-2">
+                              {mentorData.skills.map((skill, index) => (
+                                <li key={index} className="text-white/90 text-sm flex items-center">
+                                  <span className="text-blue-300 mr-2">•</span>
+                                  {skill}
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p className="text-white/60 text-sm italic">No skills added yet.</p>
+                          )}
                         </motion.div>
                       </div>
 
@@ -234,14 +224,18 @@ const MentorProfileModal: React.FC<MentorProfileModalProps> = ({ isOpen, onClose
                         className="bg-white/10 backdrop-blur-sm rounded-2xl p-6"
                       >
                         <h3 className="text-xl font-bold text-white mb-4">Hobbies</h3>
-                        <ul className="space-y-2">
-                          {mentorData.hobbies.map((hobby, index) => (
-                            <li key={index} className="text-white/90 text-sm flex items-center">
-                              <span className="text-blue-300 mr-2">•</span>
-                              {hobby}
-                            </li>
-                          ))}
-                        </ul>
+                        {mentorData.hobbies.length > 0 ? (
+                          <ul className="space-y-2">
+                            {mentorData.hobbies.map((hobby, index) => (
+                              <li key={index} className="text-white/90 text-sm flex items-center">
+                                <span className="text-blue-300 mr-2">•</span>
+                                {hobby}
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-white/60 text-sm italic">No hobbies added yet.</p>
+                        )}
                       </motion.div>
                     </div>
                   </div>

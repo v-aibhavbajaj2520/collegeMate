@@ -4,16 +4,12 @@ import { useAuth } from '../../../contexts/AuthContext';
 import { 
   MdDashboard, 
   MdPeople, 
-  MdSchool, 
-  MdAnalytics, 
   MdSettings, 
   MdLogout,
   MdClose,
-  MdNotifications,
   MdSchedule,
-  MdPayment,
-  MdRateReview,
-  MdContentPaste
+  MdBook,
+  MdPerson
 } from 'react-icons/md';
 
 interface MentorSidebarProps {
@@ -32,13 +28,8 @@ const MentorSidebar: React.FC<MentorSidebarProps> = ({
     { id: 'overview', label: 'Overview', icon: MdDashboard, path: '/mentor/dashboard/overview' },
     { id: 'students', label: 'My Students', icon: MdPeople, path: '/mentor/dashboard/students' },
     { id: 'schedule', label: 'Schedule', icon: MdSchedule, path: '/mentor/dashboard/schedule' },
-    { id: 'courses', label: 'My Courses', icon: MdContentPaste, path: '/mentor/dashboard/courses' },
-    { id: 'sessions', label: 'Sessions', icon: MdSchool, path: '/mentor/dashboard/sessions' },
-    { id: 'reviews', label: 'Reviews', icon: MdRateReview, path: '/mentor/dashboard/reviews' },
-    { id: 'earnings', label: 'Earnings', icon: MdPayment, path: '/mentor/dashboard/earnings' },
-    { id: 'analytics', label: 'Analytics', icon: MdAnalytics, path: '/mentor/dashboard/analytics' },
-    { id: 'notifications', label: 'Notifications', icon: MdNotifications, path: '/mentor/dashboard/notifications' },
-    { id: 'settings', label: 'Settings', icon: MdSettings, path: '/mentor/dashboard/settings' },
+    { id: 'bookings', label: 'Bookings', icon: MdBook, path: '/mentor/dashboard/bookings' },
+    { id: 'profile', label: 'Profile', icon: MdPerson, path: '/mentor/dashboard/profile' },
   ];
 
   return (
@@ -61,12 +52,11 @@ const MentorSidebar: React.FC<MentorSidebarProps> = ({
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-teal-600 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">M</span>
               </div>
               <div>
-                <h2 className="text-xl font-bold text-gray-900">Mentor Hub</h2>
-                <p className="text-sm text-gray-500">Teaching Center</p>
+                <h2 className="text-xl font-bold gradient-text">Mentor Dashboard</h2>
               </div>
             </div>
             <button
@@ -80,7 +70,7 @@ const MentorSidebar: React.FC<MentorSidebarProps> = ({
           {/* User Info */}
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
                 {user?.name?.charAt(0).toUpperCase() || 'M'}
               </div>
               <div>
@@ -103,8 +93,8 @@ const MentorSidebar: React.FC<MentorSidebarProps> = ({
                   className={`
                     w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-200
                     ${isActive
-                      ? 'bg-gradient-to-r from-green-500 to-teal-600 text-white shadow-lg'
-                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                      ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg'
+                      : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'
                     }
                   `}
                 >

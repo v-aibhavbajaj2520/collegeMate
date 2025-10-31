@@ -13,8 +13,8 @@ const router = express.Router();
 // Create category
 router.post("/", authenticateToken, authorize(["ADMIN"]), createCategory);
 
-// Get all categories without mentors
-router.get("/", authenticateToken, authorize(["ADMIN"]), getAllCategories);
+// Get all categories without mentors (ADMIN and MENTOR can access)
+router.get("/", authenticateToken, authorize(["ADMIN", "MENTOR"]), getAllCategories);
 
 // Get one specific category with mentors in it
 router.get("/:id", authenticateToken, authorize(["ADMIN"]), getOneCategory);

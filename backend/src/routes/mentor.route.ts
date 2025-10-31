@@ -6,10 +6,22 @@ import {
   getMentorById, 
   createMentor, 
   updateMentor, 
-  deleteMentor 
+  deleteMentor,
+  getMyMentorProfile,
+  updateMyMentorProfile,
+  getPublicMentors
 } from "../controllers/mentor.controller.js";
 
 const router = express.Router();
+
+// Get public mentors (no authentication required, verified mentors only)
+router.get("/public", getPublicMentors);
+
+// MENTOR: Get own profile
+router.get("/me", authenticateToken, authorize(["MENTOR"]), getMyMentorProfile);
+
+// MENTOR: Update own profile
+router.put("/me", authenticateToken, authorize(["MENTOR"]), updateMyMentorProfile);
 
 // Get all mentors (ADMIN only)
 router.get("/", authenticateToken, authorize(["ADMIN"]), getAllMentors);

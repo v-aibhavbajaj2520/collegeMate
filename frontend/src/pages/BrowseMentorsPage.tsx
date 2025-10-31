@@ -2,8 +2,45 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Footer from '../components/Footer';
 import MentorProfileModal from '../components/MentorProfileModal';
+import api from '../utils/api';
 
-// Mentor interface
+// Backend Mentor interface
+interface BackendMentor {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  pricePerSlot: number | null;
+  bio: string | null;
+  expertise: string[];
+  interests: string[];
+  skills: string[];
+  achievements: string[];
+  categoryId: string | null;
+  category: {
+    id: string;
+    name: string;
+    pricePerSlot: number;
+  } | null;
+  collegeId: string | null;
+  college: {
+    id: string;
+    name: string;
+  } | null;
+  courseId: string | null;
+  course: {
+    id: string;
+    name: string;
+  } | null;
+  isVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
+  _count?: {
+    mentorBookings?: number;
+  };
+}
+
+// Frontend Mentor interface
 interface Mentor {
   id: number;
   name: string;
@@ -14,6 +51,13 @@ interface Mentor {
   filter: string;
   experience: string;
   specialization: string;
+  // Additional fields for modal
+  about?: string;
+  achievements?: string[];
+  skills?: string[];
+  hobbies?: string[];
+  title?: string;
+  universityCredentials?: string;
 }
 
 // MentorCard component (reusing from MeetYourMentors)
@@ -101,97 +145,122 @@ const BrowseMentorsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMentor, setSelectedMentor] = useState<Mentor | null>(null);
 
-  // Mock data for development (replace with actual API call)
-  const mockMentors: Mentor[] = [
-    {
-      id: 1,
-      name: "Vaibhav Bajaj",
-      university: "IILM University",
-      degree: "Bachelors of Technology - Computer Science",
-      rating: 4.5,
-      image: "https://i.pravatar.cc/150?u=vaibhav",
-      filter: "iilm",
-      experience: "3 years",
-      specialization: "Web Development"
-    },
-    {
-      id: 2,
-      name: "Sarah Johnson",
-      university: "Sharda University",
-      degree: "Bachelors of Pharmacy",
-      rating: 5,
-      image: "https://i.pravatar.cc/150?u=sarah",
-      filter: "sharda",
-      experience: "2 years",
-      specialization: "Pharmaceutical Research"
-    },
-    {
-      id: 3,
-      name: "Raj Patel",
-      university: "IIT Delhi",
-      degree: "Masters in Computer Science",
-      rating: 4.8,
-      image: "https://i.pravatar.cc/150?u=raj",
-      filter: "iit",
-      experience: "5 years",
-      specialization: "Machine Learning"
-    },
-    {
-      id: 4,
-      name: "Priya Sharma",
-      university: "NSUT Delhi",
-      degree: "Bachelors of Technology - Electronics",
-      rating: 4.7,
-      image: "https://i.pravatar.cc/150?u=priya",
-      filter: "nsut",
-      experience: "4 years",
-      specialization: "Electronics Engineering"
-    },
-    {
-      id: 5,
-      name: "Amit Kumar",
-      university: "IILM University",
-      degree: "Bachelors of Business Administration",
-      rating: 4.3,
-      image: "https://i.pravatar.cc/150?u=amit",
-      filter: "iilm",
-      experience: "2 years",
-      specialization: "Business Management"
-    },
-    {
-      id: 6,
-      name: "Neha Singh",
-      university: "Sharda University",
-      degree: "Masters in Psychology",
-      rating: 4.9,
-      image: "https://i.pravatar.cc/150?u=neha",
-      filter: "sharda",
-      experience: "3 years",
-      specialization: "Clinical Psychology"
+  // Helper function to calculate experience from createdAt date
+  const calculateExperience = (createdAt: string): string => {
+    const daysSinceJoin = Math.floor((Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24));
+    const years = Math.floor(daysSinceJoin / 365);
+    const months = Math.floor((daysSinceJoin % 365) / 30);
+    
+    if (years > 0) {
+      return `${years} year${years !== 1 ? 's' : ''}`;
+    } else if (months > 0) {
+      return `${months} month${months !== 1 ? 's' : ''}`;
+    } else {
+      return 'Less than a month';
     }
-  ];
+  };
+
+  // Helper function to generate a unique numeric ID from string
+  const generateNumericId = (id: string): number => {
+    let hash = 0;
+    for (let i = 0; i < id.length; i++) {
+      const char = id.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    return Math.abs(hash);
+  };
+
+  // Transform backend mentor to frontend format
+  const transformMentor = (backendMentor: BackendMentor): Mentor => {
+    // Generate filter from university name (lowercase, no spaces)
+    const universityFilter = backendMentor.college?.name
+      ?.toLowerCase()
+      .replace(/\s+/g, '')
+      .substring(0, 10) || 'general';
+
+    // Calculate experience
+    const experience = calculateExperience(backendMentor.createdAt);
+
+    // Get specialization from category or expertise
+    const specialization = backendMentor.category?.name || 
+                          (backendMentor.expertise && backendMentor.expertise[0]) || 
+                          'General Mentoring';
+
+    // Generate rating (default to 4.5, can be improved with actual rating system)
+    // For now, use a simple formula based on bookings
+    const bookingCount = backendMentor._count?.mentorBookings || 0;
+    const rating = bookingCount > 10 ? 4.8 : bookingCount > 5 ? 4.5 : 4.3;
+
+    // Create about text from bio or generate from experience
+    const about = backendMentor.bio || 
+      `Experienced ${specialization} professional with ${experience} of industry experience. Passionate about helping students achieve their academic and career goals through personalized mentorship.`;
+
+    return {
+      id: generateNumericId(backendMentor.id),
+      name: backendMentor.name,
+      university: backendMentor.college?.name || 'Not specified',
+      degree: backendMentor.course?.name || 'Not specified',
+      rating: rating,
+      image: `https://i.pravatar.cc/150?u=${backendMentor.id}`,
+      filter: universityFilter,
+      experience: experience,
+      specialization: specialization,
+      // Additional fields for modal
+      about: about,
+      achievements: backendMentor.achievements && backendMentor.achievements.length > 0 
+        ? backendMentor.achievements 
+        : undefined,
+      skills: backendMentor.skills && backendMentor.skills.length > 0 
+        ? backendMentor.skills 
+        : undefined,
+      hobbies: backendMentor.interests && backendMentor.interests.length > 0 
+        ? backendMentor.interests 
+        : undefined,
+      title: `${specialization} Expert`,
+      universityCredentials: `${backendMentor.course?.name || 'Degree'} from ${backendMentor.college?.name || 'University'}`
+    };
+  };
 
   // Scroll to top on component mount
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Fetch mentors data
+  // Fetch mentors data from API
   useEffect(() => {
     const fetchMentors = async () => {
       try {
         setLoading(true);
-        // For now, using mock data. Replace with actual API call:
-        // const response = await axios.get('/api/mentors');
-        // setAllMentors(response.data);
-        
-        // Using mock data for development
-        setAllMentors(mockMentors);
-        setFilteredMentors(mockMentors);
         setError('');
-      } catch (err) {
-        setError('Failed to fetch mentors. Please try again later.');
+        
+        const response = await api.get<{ success: boolean; data: BackendMentor[]; count: number }>('/api/mentors/public');
+        
+        if (response.data.success && response.data.data) {
+          // Transform backend data to frontend format
+          const transformedMentors = response.data.data.map(transformMentor);
+          setAllMentors(transformedMentors);
+          setFilteredMentors(transformedMentors);
+          
+          // If no mentors found
+          if (transformedMentors.length === 0) {
+            setError('No verified mentors found in the database.');
+          }
+        } else {
+          setError('Failed to fetch mentors. Please try again later.');
+        }
+      } catch (err: any) {
+        const errorMessage = err.response?.data?.message || err.message || 'Failed to fetch mentors. Please make sure the backend server is running.';
+        setError(errorMessage);
         console.error('Error fetching mentors:', err);
+        
+        // Log more details for debugging
+        if (err.response) {
+          console.error('Response status:', err.response.status);
+          console.error('Response data:', err.response.data);
+        } else if (err.request) {
+          console.error('Request made but no response received. Is the backend server running?');
+        }
       } finally {
         setLoading(false);
       }

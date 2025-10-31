@@ -67,7 +67,32 @@ export const UpdateMentorSchema = z.object({
 
   expertise: z
     .array(z.string())
+    .optional(),
+  
+  interests: z
+    .array(z.string())
+    .max(5, { message: "Maximum 5 interests allowed" })
+    .optional(),
+  
+  skills: z
+    .array(z.string())
+    .max(5, { message: "Maximum 5 skills allowed" })
+    .optional(),
+  
+  achievements: z
+    .array(z.string())
+    .max(5, { message: "Maximum 5 achievements allowed" })
+    .optional(),
+  
+  collegeId: z
+    .string()
     .optional()
+    .nullable(),
+  
+  courseId: z
+    .string()
+    .optional()
+    .nullable()
 });
 
 export type CreateMentorType = z.infer<typeof CreateMentorSchema>;

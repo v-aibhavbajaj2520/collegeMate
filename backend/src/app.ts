@@ -9,6 +9,8 @@ import cartRoutes from "./routes/cart.route.js"
 import mentorRoutes from "./routes/mentor.route.js"
 import bookingRoutes from "./routes/booking.route.js"
 import slotRoutes from "./routes/slot.route.js"
+import collegeRoutes from "./routes/college.route.js"
+import courseRoutes from "./routes/course.route.js"
 import { cleanupExpiredOTPs } from './services/cleanup.js';
 
 const app = express();
@@ -41,6 +43,8 @@ app.use('/api/carts', cartRoutes);
 app.use('/api/mentors', mentorRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/slots', slotRoutes );
+app.use('/api/colleges', collegeRoutes);
+app.use('/api/courses', courseRoutes);
 // app.use('/api/enrollments', enrollmentRoutes);
 
 // Error handler

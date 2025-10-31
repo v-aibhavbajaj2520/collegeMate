@@ -6,6 +6,8 @@ import AdminDashboardPage from './pages/DashboardPage';
 import AdminBookingsPage from './pages/BookingsPage';
 import AdminEnrolledStudentsPage from './pages/EnrolledStudentsPage';
 import AdminMentorsPage from './pages/MentorsPage';
+import AdminPricingsPage from './pages/PricingsPage';
+import AdminCollegesAndCoursesPage from './pages/CollegesAndCoursesPage';
 
 // Additional admin components (you can create these later)
 // const AdminReports = () => <div className="p-6">Admin Reports Component</div>;
@@ -38,6 +40,8 @@ const AdminLayout: React.FC = () => {
             <Route path="/bookings" element={<AdminBookingsPage />} />
             <Route path="/students" element={<AdminEnrolledStudentsPage />} />
             <Route path="/mentors" element={<AdminMentorsPage />} />
+            <Route path="/pricings" element={<AdminPricingsPage />} />
+            <Route path="/colleges-courses" element={<AdminCollegesAndCoursesPage />} />
             <Route path="/analytics" element={<AdminAnalytics />} />
             {/* <Route path="/reports" element={<AdminReports />} /> */}
             <Route path="/payments" element={<AdminPayments />} />

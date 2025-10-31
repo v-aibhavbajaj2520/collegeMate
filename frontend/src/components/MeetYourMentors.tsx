@@ -3,56 +3,211 @@ import { motion } from 'framer-motion';
 import { FaStar, FaGraduationCap } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import MentorProfileModal from './MentorProfileModal';
+import api from '../utils/api';
+
+// Backend Mentor interface
+interface BackendMentor {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  pricePerSlot: number | null;
+  bio: string | null;
+  expertise: string[];
+  interests: string[];
+  skills: string[];
+  achievements: string[];
+  categoryId: string | null;
+  category: {
+    id: string;
+    name: string;
+    pricePerSlot: number;
+  } | null;
+  collegeId: string | null;
+  college: {
+    id: string;
+    name: string;
+  } | null;
+  courseId: string | null;
+  course: {
+    id: string;
+    name: string;
+  } | null;
+  isVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
+  _count?: {
+    mentorBookings?: number;
+  };
+}
+
+// Frontend Mentor interface
+interface Mentor {
+  id: number;
+  name: string;
+  university: string;
+  degree: string;
+  rating: number;
+  image: string;
+  filter: string;
+  experience: string;
+  specialization: string;
+  // Additional fields for modal
+  about?: string;
+  achievements?: string[];
+  skills?: string[];
+  hobbies?: string[];
+  title?: string;
+  universityCredentials?: string;
+}
 
 const MeetYourMentors = () => {
   const [activeFilter, setActiveFilter] = useState('all');
+  const [mentors, setMentors] = useState<Mentor[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedMentor, setSelectedMentor] = useState(null);
-  
-  const mentors = [
-    {
-      id: 1,
-      name: "Vaibhav Bajaj",
-      university: "IILM University",
-      degree: "Bachelors of Technology - Computer Science",
-      rating: 4.5,
-      image: "https://i.pravatar.cc/150?u=vaibhav",
-      filter: "iilm",
-      experience: "3 years",
-      specialization: "Web Development"
-    },
-    {
-      id: 2,
-      name: "Sarah Johnson",
-      university: "Sharda University",
-      degree: "Bachelors of Pharmacy",
-      rating: 5,
-      image: "https://i.pravatar.cc/150?u=sarah",
-      filter: "sharda",
-      experience: "2 years",
-      specialization: "Pharmaceutical Research"
-    },
-    {
-      id: 3,
-      name: "Raj Patel",
-      university: "IIT Delhi",
-      degree: "Masters in Computer Science",
-      rating: 4.8,
-      image: "https://i.pravatar.cc/150?u=raj",
-      filter: "iit",
-      experience: "5 years",
-      specialization: "Machine Learning"
-    },
-  ];
+  const [selectedMentor, setSelectedMentor] = useState<Mentor | null>(null);
+
+  // Helper function to calculate experience from createdAt date
+  const calculateExperience = (createdAt: string): string => {
+    const daysSinceJoin = Math.floor((Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24));
+    const years = Math.floor(daysSinceJoin / 365);
+    const months = Math.floor((daysSinceJoin % 365) / 30);
+    
+    if (years > 0) {
+      return `${years} year${years !== 1 ? 's' : ''}`;
+    } else if (months > 0) {
+      return `${months} month${months !== 1 ? 's' : ''}`;
+    } else {
+      return 'Less than a month';
+    }
+  };
+
+  // Helper function to generate a unique numeric ID from string
+  const generateNumericId = (id: string): number => {
+    let hash = 0;
+    for (let i = 0; i < id.length; i++) {
+      const char = id.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    return Math.abs(hash);
+  };
+
+  // Transform backend mentor to frontend format
+  const transformMentor = (backendMentor: BackendMentor): Mentor => {
+    // Generate filter from university name (lowercase, no spaces)
+    const universityFilter = backendMentor.college?.name
+      ?.toLowerCase()
+      .replace(/\s+/g, '')
+      .substring(0, 10) || 'general';
+
+    // Calculate experience
+    const experience = calculateExperience(backendMentor.createdAt);
+
+    // Get specialization from category or expertise
+    const specialization = backendMentor.category?.name || 
+                          (backendMentor.expertise && backendMentor.expertise[0]) || 
+                          'General Mentoring';
+
+    // Generate rating (default to 4.5, can be improved with actual rating system)
+    const bookingCount = backendMentor._count?.mentorBookings || 0;
+    const rating = bookingCount > 10 ? 4.8 : bookingCount > 5 ? 4.5 : 4.3;
+
+    // Create about text from bio or generate from experience
+    const about = backendMentor.bio || 
+      `Experienced ${specialization} professional with ${experience} of industry experience. Passionate about helping students achieve their academic and career goals through personalized mentorship.`;
+
+    return {
+      id: generateNumericId(backendMentor.id),
+      name: backendMentor.name,
+      university: backendMentor.college?.name || 'Not specified',
+      degree: backendMentor.course?.name || 'Not specified',
+      rating: rating,
+      image: `https://i.pravatar.cc/150?u=${backendMentor.id}`,
+      filter: universityFilter,
+      experience: experience,
+      specialization: specialization,
+      // Additional fields for modal
+      about: about,
+      achievements: backendMentor.achievements && backendMentor.achievements.length > 0 
+        ? backendMentor.achievements 
+        : undefined,
+      skills: backendMentor.skills && backendMentor.skills.length > 0 
+        ? backendMentor.skills 
+        : undefined,
+      hobbies: backendMentor.interests && backendMentor.interests.length > 0 
+        ? backendMentor.interests 
+        : undefined,
+      title: `${specialization} Expert`,
+      universityCredentials: `${backendMentor.course?.name || 'Degree'} from ${backendMentor.college?.name || 'University'}`
+    };
+  };
+
+  // Fetch mentors data from API
+  useEffect(() => {
+    const fetchMentors = async () => {
+      try {
+        setLoading(true);
+        setError('');
+        
+        const response = await api.get<{ success: boolean; data: BackendMentor[]; count: number }>('/api/mentors/public');
+        
+        if (response.data.success && response.data.data) {
+          // Transform backend data to frontend format and limit to first 6 for homepage preview
+          const transformedMentors = response.data.data
+            .slice(0, 6)
+            .map(transformMentor);
+          setMentors(transformedMentors);
+        } else {
+          setError('Failed to fetch mentors.');
+        }
+      } catch (err: any) {
+        console.error('Error fetching mentors:', err);
+        setError('Failed to load mentors.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMentors();
+  }, []);
+
+  // Generate dynamic filters based on actual colleges
+  const getFilters = () => {
+    const collegesMap = new Map<string, { name: string; count: number }>();
+    
+    mentors.forEach(mentor => {
+      if (mentor.university && mentor.university !== 'Not specified') {
+        const key = mentor.filter;
+        const current = collegesMap.get(key) || { name: mentor.university, count: 0 };
+        collegesMap.set(key, { name: current.name, count: current.count + 1 });
+      }
+    });
+
+    const collegeFilters = Array.from(collegesMap.entries()).map(([key, value]) => ({
+      key,
+      label: value.name,
+      count: value.count
+    }));
+
+    return [
+      { key: 'all', label: 'See All', count: mentors.length },
+      ...collegeFilters
+    ];
+  };
+
+  const filters = getFilters();
 
   const filteredMentors = activeFilter === 'all' 
     ? mentors 
     : mentors.filter(mentor => mentor.filter === activeFilter);
 
   // Modal handlers
-  const handleViewProfile = (mentor: any) => {
+  const handleViewProfile = (mentor: Mentor) => {
     setSelectedMentor(mentor);
     setIsModalOpen(true);
   };
@@ -76,14 +231,6 @@ const MeetYourMentors = () => {
     };
   }, [isModalOpen]);
 
-  const filters = [
-    { key: 'all', label: 'See All', count: mentors.length },
-    { key: 'iilm', label: 'IILM University', count: mentors.filter(m => m.filter === 'iilm').length },
-    { key: 'sharda', label: 'Sharda University', count: mentors.filter(m => m.filter === 'sharda').length },
-    { key: 'iit', label: 'IIT Delhi', count: mentors.filter(m => m.filter === 'iit').length },
-    { key: 'nsut', label: 'NSUT Delhi', count: mentors.filter(m => m.filter === 'nsut').length }
-  ];
-
   return (
     <section id="mentors" className="py-16 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -103,37 +250,55 @@ const MeetYourMentors = () => {
         </motion.div>
 
         {/* Filter Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          viewport={{ once: true }}
-          className="flex flex-wrap justify-center gap-3 mb-8"
-        >
-          {filters.map((filter) => (
-            <motion.button
-              key={filter.key}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setActiveFilter(filter.key)}
-              className={`px-4 py-2 rounded-full font-normal transition-all duration-300 text-sm ${
-                activeFilter === filter.key
-                  ? 'bg-blue-600 text-white shadow-lg'
-                  : 'bg-white text-gray-700 hover:bg-gray-100 shadow-md'
-              }`}
-            >
-              {filter.label}
-              <span className="ml-2 text-xs opacity-75">({filter.count})</span>
-            </motion.button>
-          ))}
-        </motion.div>
+        {!loading && mentors.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="flex flex-wrap justify-center gap-3 mb-8"
+          >
+            {filters.map((filter) => (
+              <motion.button
+                key={filter.key}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setActiveFilter(filter.key)}
+                className={`px-4 py-2 rounded-full font-normal transition-all duration-300 text-sm ${
+                  activeFilter === filter.key
+                    ? 'bg-blue-600 text-white shadow-lg'
+                    : 'bg-white text-gray-700 hover:bg-gray-100 shadow-md'
+                }`}
+              >
+                {filter.label}
+                <span className="ml-2 text-xs opacity-75">({filter.count})</span>
+              </motion.button>
+            ))}
+          </motion.div>
+        )}
+
+        {/* Loading State */}
+        {loading && (
+          <div className="text-center py-12">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <p className="mt-4 text-gray-600">Loading mentors...</p>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && !loading && (
+          <div className="text-center py-12">
+            <div className="text-red-600 text-sm">{error}</div>
+          </div>
+        )}
 
         {/* Mentor Cards */}
-        <motion.div
-          layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"
-        >
-          {filteredMentors.map((mentor, index) => (
+        {!loading && filteredMentors.length > 0 && (
+          <motion.div
+            layout
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"
+          >
+            {filteredMentors.map((mentor, index) => (
             <motion.div
               key={mentor.id}
               layout
@@ -205,7 +370,15 @@ const MeetYourMentors = () => {
               </div>
             </motion.div>
           ))}
-        </motion.div>
+          </motion.div>
+        )}
+
+        {/* No Mentors Found */}
+        {!loading && filteredMentors.length === 0 && mentors.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-gray-600">No mentors found.</p>
+          </div>
+        )}
 
         {/* View All Button */}
         <motion.div

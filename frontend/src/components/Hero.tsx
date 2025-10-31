@@ -4,7 +4,7 @@ import { FaGraduationCap, FaPhone, FaWhatsapp } from 'react-icons/fa';
 
 const Hero = () => {
   return (
-    <section id="home" className="pt-32 pb-16 min-h-screen flex items-center relative overflow-hidden">
+    <section id="home" className="pt-32 pb-16 min-h-screen flex items-center relative overflow-hidden grid-pattern">
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>

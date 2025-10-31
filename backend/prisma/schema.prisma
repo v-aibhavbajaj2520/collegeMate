@@ -48,10 +48,19 @@ model User {
   pricePerSlot  Float?    // Price for 30-minute slot (only for mentors)
   bio           String?   // Mentor bio/description
   expertise     String[]  // Array of expertise areas
+  interests     String[]  // Array of interests (max 5)
+  skills        String[]  // Array of skills (max 5)
+  achievements  String[]  // Array of achievements (max 5)
 
   // Category relation (only mentors will have this)
   categoryId    String?   
   category      Category? @relation("CategoryMentors", fields: [categoryId], references: [id])
+
+  // College and Course relations (only for mentors)
+  collegeId     String?
+  college       College?  @relation("MentorColleges", fields: [collegeId], references: [id])
+  courseId      String?
+  course        Course?   @relation("MentorCourses", fields: [courseId], references: [id])
 
   // OTP for login/signup verification
   otp           String?
@@ -83,6 +92,24 @@ model Category {
 
   // All mentors in this category
   mentors      User[]    @relation("CategoryMentors")
+}
+
+model College {
+  id      String    @id @default(cuid())
+  name    String    @unique
+  mentors User[]    @relation("MentorColleges")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Course {
+  id      String    @id @default(cuid())
+  name    String    @unique
+  mentors User[]    @relation("MentorCourses")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 

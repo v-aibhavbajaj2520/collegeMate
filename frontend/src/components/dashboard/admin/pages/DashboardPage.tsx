@@ -7,92 +7,127 @@ import {
   MdTrendingDown
 } from 'react-icons/md';
 import ResponsiveTable from '../../shared/ResponsiveTable';
+import api from '../../../../utils/api';
+
+interface BackendBooking {
+  id: string;
+  studentId: string;
+  student: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  mentorId: string;
+  mentor: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  items: Array<{
+    id: string;
+    date: string;
+    startTime: string;
+    price: number;
+  }>;
+  totalPrice: number;
+  status: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED';
+  createdAt: string;
+}
 
 interface Booking {
   id: string;
   mentorName: string;
   studentName: string;
-  college: string;
   time: string;
-  status: 'confirmed' | 'pending' | 'cancelled';
+  status: 'confirmed' | 'pending';
 }
 
 const AdminDashboardPage: React.FC = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [mentorsCount, setMentorsCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string>('');
 
-  // Mock data - replace with actual API calls
+  // Fetch data from backend
   useEffect(() => {
-    const mockBookings: Booking[] = [
-      {
-        id: '1',
-        mentorName: 'Dr. Sarah Johnson',
-        studentName: 'John Doe',
-        college: 'MIT',
-        time: '10:00 AM',
-        status: 'confirmed'
-      },
-      {
-        id: '2',
-        mentorName: 'Prof. Michael Chen',
-        studentName: 'Jane Smith',
-        college: 'Stanford',
-        time: '11:30 AM',
-        status: 'confirmed'
-      },
-      {
-        id: '3',
-        mentorName: 'Dr. Emily Davis',
-        studentName: 'Alex Wilson',
-        college: 'Harvard',
-        time: '2:00 PM',
-        status: 'pending'
-      },
-      {
-        id: '4',
-        mentorName: 'Prof. David Brown',
-        studentName: 'Maria Garcia',
-        college: 'UC Berkeley',
-        time: '3:30 PM',
-        status: 'confirmed'
-      }
-    ];
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError('');
 
-    setTimeout(() => {
-      setBookings(mockBookings);
-      setLoading(false);
-    }, 1000);
+        // Fetch bookings and mentors in parallel
+        const [bookingsResponse, mentorsResponse] = await Promise.all([
+          api.get<{ success: boolean; data: BackendBooking[]; count: number }>('/api/bookings/all'),
+          api.get<{ success: boolean; data: any[]; count: number }>('/api/mentors')
+        ]);
+
+        if (bookingsResponse.data.success) {
+          const today = new Date().toISOString().split('T')[0];
+          const todayBookings: Booking[] = [];
+
+          bookingsResponse.data.data.forEach((backendBooking) => {
+            backendBooking.items.forEach((item) => {
+              const bookingDate = new Date(item.date).toISOString().split('T')[0];
+              if (bookingDate === today && backendBooking.status === 'CONFIRMED') {
+                todayBookings.push({
+                  id: `${backendBooking.id}-${item.id}`,
+                  mentorName: backendBooking.mentor.name,
+                  studentName: backendBooking.student.name,
+                  time: item.startTime,
+                  status: 'confirmed'
+                });
+              }
+            });
+          });
+
+          setBookings(todayBookings);
+        }
+
+        if (mentorsResponse.data.success) {
+          setMentorsCount(mentorsResponse.data.count);
+        }
+      } catch (err: any) {
+        console.error('Error fetching dashboard data:', err);
+        setError(err.response?.data?.message || 'Failed to fetch dashboard data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  const totalBookings = bookings.length;
-  const totalRevenue = bookings.filter(b => b.status === 'confirmed').length * 50; // $50 per booking
-  const totalMentors = 12; // Mock data
+  // Calculate stats
+  const totalBookingsResponse = bookings.length; // Today's bookings
+  const allBookingsResponse = bookings.length; // For revenue calculation, we'd need all bookings
+  const totalRevenue = 0; // Calculate from all confirmed bookings' totalPrice
+  const totalMentors = mentorsCount;
   const confirmedBookings = bookings.filter(b => b.status === 'confirmed');
 
   const stats = [
     {
-      title: 'Total Bookings',
-      value: totalBookings,
+      title: 'Today\'s Bookings',
+      value: totalBookingsResponse,
       icon: MdCalendarToday,
       color: 'from-blue-500 to-blue-600',
-      change: '+12%',
-      changeType: 'positive'
-    },
-    {
-      title: 'Total Revenue',
-      value: `$${totalRevenue}`,
-      icon: MdAttachMoney,
-      color: 'from-green-500 to-green-600',
-      change: '+8%',
-      changeType: 'positive'
+      change: '',
+      changeType: 'positive' as const
     },
     {
       title: 'Total Mentors',
       value: totalMentors,
       icon: MdSchool,
       color: 'from-purple-500 to-purple-600',
-      change: '+2',
-      changeType: 'positive'
+      change: '',
+      changeType: 'positive' as const
+    },
+    {
+      title: 'Confirmed Today',
+      value: confirmedBookings.length,
+      icon: MdAttachMoney,
+      color: 'from-green-500 to-green-600',
+      change: '',
+      changeType: 'positive' as const
     }
   ];
 
@@ -114,19 +149,20 @@ const AdminDashboardPage: React.FC = () => {
                 <div>
                   <p className="text-sm font-medium text-gray-600">{stat.title}</p>
                   <p className="text-2xl font-bold text-gray-900 mt-1">{stat.value}</p>
-                  <div className="flex items-center mt-2">
-                    {stat.changeType === 'positive' ? (
-                      <MdTrendingUp className="w-4 h-4 text-green-500 mr-1" />
-                    ) : (
-                      <MdTrendingDown className="w-4 h-4 text-red-500 mr-1" />
-                    )}
-                    <span className={`text-sm font-medium ${
-                      stat.changeType === 'positive' ? 'text-green-600' : 'text-red-600'
-                    }`}>
-                      {stat.change}
-                    </span>
-                    <span className="text-sm text-gray-500 ml-1">vs last month</span>
-                  </div>
+                  {stat.change && (
+                    <div className="flex items-center mt-2">
+                      {stat.changeType === 'positive' ? (
+                        <MdTrendingUp className="w-4 h-4 text-green-500 mr-1" />
+                      ) : (
+                        <MdTrendingDown className="w-4 h-4 text-red-500 mr-1" />
+                      )}
+                      <span className={`text-sm font-medium ${
+                        stat.changeType === 'positive' ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                        {stat.change}
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <div className={`w-12 h-12 bg-gradient-to-r ${stat.color} rounded-lg flex items-center justify-center`}>
                   <Icon className="w-6 h-6 text-white" />
@@ -154,9 +190,6 @@ const AdminDashboardPage: React.FC = () => {
                   Student
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  College
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Time
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -167,13 +200,19 @@ const AdminDashboardPage: React.FC = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {loading ? (
                 <tr>
-                    <td colSpan={5} className="px-4 py-3 text-center text-gray-500">
+                    <td colSpan={4} className="px-4 py-3 text-center text-gray-500">
                     Loading...
+                  </td>
+                </tr>
+              ) : error ? (
+                <tr>
+                    <td colSpan={4} className="px-4 py-3 text-center text-red-500">
+                    {error}
                   </td>
                 </tr>
               ) : confirmedBookings.length === 0 ? (
                 <tr>
-                    <td colSpan={5} className="px-4 py-3 text-center text-gray-500">
+                    <td colSpan={4} className="px-4 py-3 text-center text-gray-500">
                     No confirmed bookings for today
                   </td>
                 </tr>
@@ -192,9 +231,6 @@ const AdminDashboardPage: React.FC = () => {
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap">
                       <div className="text-sm text-gray-900">{booking.studentName}</div>
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{booking.college}</div>
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap">
                       <div className="text-sm text-gray-900">{booking.time}</div>

@@ -8,99 +8,111 @@ import {
   MdDelete
 } from 'react-icons/md';
 import ResponsiveTable from '../../shared/ResponsiveTable';
+import api from '../../../../utils/api';
+
+interface BookingItem {
+  id: string;
+  slotId: string;
+  slot: {
+    id: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    status: string;
+  };
+  mentorId: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  price: number;
+  status: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED';
+}
+
+interface BackendBooking {
+  id: string;
+  studentId: string;
+  student: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  mentorId: string;
+  mentor: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  items: BookingItem[];
+  totalPrice: number;
+  status: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED';
+  createdAt: string;
+  updatedAt: string;
+}
 
 interface Booking {
   id: string;
   mentorName: string;
   studentName: string;
   studentEmail: string;
-  college: string;
   date: string;
   time: string;
   status: 'confirmed' | 'pending' | 'cancelled' | 'completed';
   amount: number;
   createdAt: string;
+  bookingItem?: BookingItem;
 }
 
 const AdminBookingsPage: React.FC = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [filteredBookings, setFilteredBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [collegeFilter, setCollegeFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('');
 
-  // Mock data - replace with actual API calls
+  // Fetch bookings from backend
   useEffect(() => {
-    const mockBookings: Booking[] = [
-      {
-        id: '1',
-        mentorName: 'Dr. Sarah Johnson',
-        studentName: 'John Doe',
-        studentEmail: 'john.doe@mit.edu',
-        college: 'MIT',
-        date: '2024-01-15',
-        time: '10:00 AM',
-        status: 'confirmed',
-        amount: 50,
-        createdAt: '2024-01-10T09:00:00Z'
-      },
-      {
-        id: '2',
-        mentorName: 'Prof. Michael Chen',
-        studentName: 'Jane Smith',
-        studentEmail: 'jane.smith@stanford.edu',
-        college: 'Stanford',
-        date: '2024-01-15',
-        time: '11:30 AM',
-        status: 'pending',
-        amount: 50,
-        createdAt: '2024-01-12T14:30:00Z'
-      },
-      {
-        id: '3',
-        mentorName: 'Dr. Emily Davis',
-        studentName: 'Alex Wilson',
-        studentEmail: 'alex.wilson@harvard.edu',
-        college: 'Harvard',
-        date: '2024-01-16',
-        time: '2:00 PM',
-        status: 'completed',
-        amount: 50,
-        createdAt: '2024-01-08T11:15:00Z'
-      },
-      {
-        id: '4',
-        mentorName: 'Prof. David Brown',
-        studentName: 'Maria Garcia',
-        studentEmail: 'maria.garcia@berkeley.edu',
-        college: 'UC Berkeley',
-        date: '2024-01-16',
-        time: '3:30 PM',
-        status: 'cancelled',
-        amount: 50,
-        createdAt: '2024-01-14T16:45:00Z'
-      },
-      {
-        id: '5',
-        mentorName: 'Dr. Lisa Wang',
-        studentName: 'David Kim',
-        studentEmail: 'david.kim@caltech.edu',
-        college: 'Caltech',
-        date: '2024-01-17',
-        time: '9:00 AM',
-        status: 'confirmed',
-        amount: 50,
-        createdAt: '2024-01-13T10:20:00Z'
-      }
-    ];
+    const fetchBookings = async () => {
+      try {
+        setLoading(true);
+        setError('');
+        const response = await api.get<{ success: boolean; data: BackendBooking[]; count: number }>('/api/bookings/all');
+        
+        if (response.data.success) {
+          // Transform backend data to frontend format
+          const transformedBookings: Booking[] = [];
+          
+          response.data.data.forEach((backendBooking) => {
+            // Create a booking entry for each booking item
+            backendBooking.items.forEach((item) => {
+              transformedBookings.push({
+                id: `${backendBooking.id}-${item.id}`,
+                mentorName: backendBooking.mentor.name,
+                studentName: backendBooking.student.name,
+                studentEmail: backendBooking.student.email,
+                date: new Date(item.date).toISOString().split('T')[0],
+                time: item.startTime,
+                status: backendBooking.status.toLowerCase() as 'confirmed' | 'pending' | 'cancelled' | 'completed',
+                amount: item.price,
+                createdAt: backendBooking.createdAt,
+                bookingItem: item
+              });
+            });
+          });
 
-    setTimeout(() => {
-      setBookings(mockBookings);
-      setFilteredBookings(mockBookings);
-      setLoading(false);
-    }, 1000);
+          setBookings(transformedBookings);
+          setFilteredBookings(transformedBookings);
+        }
+      } catch (err: any) {
+        console.error('Error fetching bookings:', err);
+        setError(err.response?.data?.message || 'Failed to fetch bookings');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBookings();
   }, []);
 
   // Filter bookings based on search and filters
@@ -112,8 +124,7 @@ const AdminBookingsPage: React.FC = () => {
       filtered = filtered.filter(booking =>
         (booking.mentorName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
         (booking.studentName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (booking.studentEmail || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (booking.college || '').toLowerCase().includes(searchTerm.toLowerCase())
+        (booking.studentEmail || '').toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -122,18 +133,13 @@ const AdminBookingsPage: React.FC = () => {
       filtered = filtered.filter(booking => booking.status === statusFilter);
     }
 
-    // College filter
-    if (collegeFilter !== 'all') {
-      filtered = filtered.filter(booking => booking.college === collegeFilter);
-    }
-
     // Date filter
     if (dateFilter) {
       filtered = filtered.filter(booking => booking.date === dateFilter);
     }
 
     setFilteredBookings(filtered);
-  }, [bookings, searchTerm, statusFilter, collegeFilter, dateFilter]);
+  }, [bookings, searchTerm, statusFilter, dateFilter]);
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
@@ -151,7 +157,6 @@ const AdminBookingsPage: React.FC = () => {
     );
   };
 
-  const uniqueColleges = [...new Set(bookings.map(booking => booking.college))];
 
   return (
     <div className="p-6 space-y-6">
@@ -195,18 +200,6 @@ const AdminBookingsPage: React.FC = () => {
             <option value="completed">Completed</option>
           </select>
 
-          {/* College Filter */}
-          <select
-            value={collegeFilter}
-            onChange={(e) => setCollegeFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent min-w-[150px]"
-          >
-            <option value="all">All Colleges</option>
-            {uniqueColleges.map(college => (
-              <option key={college} value={college}>{college}</option>
-            ))}
-          </select>
-
           {/* Date Filter */}
           <input
             type="date"
@@ -244,9 +237,6 @@ const AdminBookingsPage: React.FC = () => {
                   Student
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  College
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Date & Time
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -263,13 +253,19 @@ const AdminBookingsPage: React.FC = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="px-6 py-4 text-center text-gray-500">
+                  <td colSpan={7} className="px-6 py-4 text-center text-gray-500">
                     Loading...
+                  </td>
+                </tr>
+              ) : error ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-4 text-center text-red-500">
+                    {error}
                   </td>
                 </tr>
               ) : filteredBookings.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-6 py-4 text-center text-gray-500">
+                  <td colSpan={7} className="px-6 py-4 text-center text-gray-500">
                     No bookings found
                   </td>
                 </tr>
@@ -295,9 +291,6 @@ const AdminBookingsPage: React.FC = () => {
                         <div className="text-sm text-gray-500">{booking.studentEmail}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {booking.college}
-                    </td>
                     <td className="px-4 py-3 whitespace-nowrap">
                       <div>
                         <div className="text-sm text-gray-900">{booking.date}</div>
@@ -308,7 +301,7 @@ const AdminBookingsPage: React.FC = () => {
                       {getStatusBadge(booking.status)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      ${booking.amount}
+                      ₹{booking.amount.toFixed(2)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center space-x-2">
