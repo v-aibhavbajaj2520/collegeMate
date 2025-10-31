@@ -2,15 +2,16 @@ import express from 'express';
 import { prisma } from '../prisma.js';
 import type { AuthRequest } from '../middleware/authenticate.js';
 import { authenticateToken } from '../middleware/authenticate.js';
+import {requireUser} from "../controllers/auth.controller.js"
 
 const router = express.Router();
 
 // GET /api/notifications - Get all notifications for the authenticated user
 router.get('/', authenticateToken, async (req: AuthRequest, res) => {
   try {
-    const authReq = req as AuthRequest;
+    requireUser(req);
     const notifications = await prisma.notification.findMany({
-      where: { userId: authReq.user.userId },
+      where: { userId: req.user.userId },
       orderBy: { createdAt: 'desc' }
     });
 
@@ -29,7 +30,7 @@ router.get('/', authenticateToken, async (req: AuthRequest, res) => {
 router.patch('/:notificationId/read', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const { notificationId } = req.params;
-    const authReq = req as AuthRequest;
+    requireUser(req);
 
     if (!notificationId) {
       return res.status(400).json({ 
@@ -42,7 +43,7 @@ router.patch('/:notificationId/read', authenticateToken, async (req: AuthRequest
     const notification = await prisma.notification.findFirst({
       where: { 
         id: notificationId, 
-        userId: authReq.user.userId 
+        userId: req.user.userId 
       }
     });
 
@@ -73,7 +74,7 @@ router.patch('/:notificationId/read', authenticateToken, async (req: AuthRequest
 router.delete('/:notificationId', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const { notificationId } = req.params;
-    const authReq = req as AuthRequest;
+    requireUser(req);
 
     if (!notificationId) {
       return res.status(400).json({ 
@@ -86,7 +87,7 @@ router.delete('/:notificationId', authenticateToken, async (req: AuthRequest, re
     const notification = await prisma.notification.findFirst({
       where: { 
         id: notificationId, 
-        userId: authReq.user.userId 
+        userId: req.user.userId 
       }
     });
 

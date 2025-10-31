@@ -48,21 +48,24 @@ model User {
   pricePerSlot  Float?    // Price for 30-minute slot (only for mentors)
   bio           String?   // Mentor bio/description
   expertise     String[]  // Array of expertise areas
-  
+
+  // Category relation (only mentors will have this)
+  categoryId    String?   
+  category      Category? @relation("CategoryMentors", fields: [categoryId], references: [id])
+
   // OTP for login/signup verification
   otp           String?
   otpExpiresAt  DateTime?
   
   // Google OAuth (optional)
   googleId      String?   @unique
-  
+
   // Timestamps
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   // Relations
   notifications       Notification[]
-  // enrollments         Enrollment[]
   mentorSlots         Slot[]         @relation("MentorSlots")
   studentBookings     Booking[]      @relation("StudentBookings")
   mentorBookings      Booking[]      @relation("MentorBookings")
@@ -72,6 +75,16 @@ model User {
   @@index([email])
   @@index([role])
 }
+
+model Category {
+  id           String    @id @default(cuid())
+  name         String    @unique
+  pricePerSlot Float
+
+  // All mentors in this category
+  mentors      User[]    @relation("CategoryMentors")
+}
+
 
 model Slot {
   id           String      @id @default(cuid())

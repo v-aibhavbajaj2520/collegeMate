@@ -8,7 +8,7 @@ import { createWelcomeNotification } from '../utils/notifications.js';
 import type { Request, Response } from 'express';
 import type { AuthRequest } from '../middleware/authenticate.js';
 
-function requireUser(req: AuthRequest): asserts req is AuthRequest & { user: JwtPayload } {
+export function requireUser(req: AuthRequest): asserts req is AuthRequest & { user: JwtPayload } {
   if (!req.user) throw new Error("User not authenticated");
 }
 
