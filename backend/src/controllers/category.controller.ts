@@ -177,7 +177,7 @@ export const updateCategory = async (req: AuthRequest, res: Response) => {
     }
    const updateDocRef: Prisma.CategoryUpdateInput = {
   ...(validatedData.name ? { name: validatedData.name } : {}),
-  ...(validatedData.pricePerSlot ? { price: validatedData.pricePerSlot } : {}),
+  ...(validatedData.pricePerSlot ? { pricePerSlot: validatedData.pricePerSlot } : {}),
 }
     // Update category
     const updatedCategory = await prisma.category.update({

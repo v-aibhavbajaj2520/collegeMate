@@ -4,6 +4,11 @@ import { prisma } from './prisma.js';
 import authRoutes from './routes/auth.js';
 import notificationRoutes from './routes/notifications.js';
 // import enrollmentRoutes from './routes/enrollments.js';
+import categoryRoutes from "./routes/category.route.js"
+import cartRoutes from "./routes/cart.route.js"
+import mentorRoutes from "./routes/mentor.route.js"
+import bookingRoutes from "./routes/booking.route.js"
+import slotRoutes from "./routes/slot.route.js"
 import { cleanupExpiredOTPs } from './services/cleanup.js';
 
 const app = express();
@@ -31,6 +36,11 @@ app.get('/api/health', (req, res) => res.json({ status: 'OK', timestamp: new Dat
 
 app.use('/api/auth', authRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/carts', cartRoutes);
+app.use('/api/mentors', mentorRoutes);
+app.use('/api/bookings', bookingRoutes);
+app.use('/api/slots', slotRoutes );
 // app.use('/api/enrollments', enrollmentRoutes);
 
 // Error handler

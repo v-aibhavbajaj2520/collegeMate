@@ -46,7 +46,7 @@ router.get(
 router.patch(
   "/:bookingId/cancel",
   authenticateToken,
-  authorize(["USER", "MENTOR"]),
+  authorize(["USER"]),
   cancelABooking
 );
 

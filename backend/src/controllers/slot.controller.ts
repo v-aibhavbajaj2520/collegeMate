@@ -13,7 +13,7 @@ import { prisma } from "../prisma.js";
 export const openSlot = async (req: AuthRequest, res: Response) => {
   try {
     requireUser(req);
-    const { id: mentorId } = req.user;
+    const { userId: mentorId } = req.user;
 
     // Validate request body
     const validationResult = openSlotSchema.safeParse(req.body);
@@ -130,7 +130,7 @@ export const openSlot = async (req: AuthRequest, res: Response) => {
 export const closeSlot = async (req: AuthRequest, res: Response) => {
   try {
     requireUser(req);
-    const { id: mentorId } = req.user;
+    const { userId: mentorId } = req.user;
     const { slotId } = req.params;
     if(!slotId){
         res.status(400).json({
@@ -226,7 +226,7 @@ export const closeSlot = async (req: AuthRequest, res: Response) => {
 export const getAllSlotsOfMentor = async (req: AuthRequest, res: Response) => {
   try {
     requireUser(req);
-    const { id: userId } = req.user;
+    const { userId } = req.user;
 
     // Optional query parameters for filtering
     const { status, date, startDate, endDate } = req.query;

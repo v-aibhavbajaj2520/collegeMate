@@ -19,7 +19,7 @@ interface CartItemError {
 export const bookFromCart = async (req: AuthRequest, res: Response) => {
   try {
     requireUser(req);
-    const { id } = req.user;
+    const { userId: id } = req.user;
 
     // Get the cart with all cart items and related data
     const cart = await prisma.cart.findUnique({
@@ -142,79 +142,52 @@ export const bookFromCart = async (req: AuthRequest, res: Response) => {
       {} as Record<string, typeof validCartItems>
     );
 
-    // Create bookings grouped by mentor
-    const createdBookings = [];
+   // Remove groupByMentor entirely
+const createdBookings = [];
 
-    for (const [mentorId, items] of Object.entries(itemsByMentor)) {
-      const totalPrice = items.reduce((sum, item) => sum + item.price, 0);
+for (const item of validCartItems) {
+  const booking = await prisma.$transaction(async (tx) => {
+    const newBooking = await tx.booking.create({
+      data: {
+        studentId: id,
+        mentorId: item.mentorId,
+        totalPrice: item.price, // Just this item's price
+        status: BookingStatus.PENDING,
+        items: {
+          create: {
+            slotId: item.slotId,
+            mentorId: item.mentorId,
+            date: item.date,
+            startTime: item.startTime,
+            endTime: item.endTime,
+            price: item.price,
+            status: BookingStatus.CONFIRMED,
+          },
+        },
+      },
+      include: {
+        items: true,
+        mentor: { select: { id: true, name: true, email: true } },
+      },
+    });
 
-      // Create booking with booking items in a transaction
-      const booking = await prisma.$transaction(async (tx) => {
-        // Create the booking
-        const newBooking = await tx.booking.create({
-          data: {
-            studentId: id,
-            mentorId,
-            totalPrice,
-            status: BookingStatus.PENDING,
-            items: {
-              create: items.map((item) => ({
-                slotId: item.slotId,
-                mentorId: item.mentorId,
-                date: item.date,
-                startTime: item.startTime,
-                endTime: item.endTime,
-                price: item.price,
-                status: BookingStatus.CONFIRMED,
-              })),
-            },
-          },
-          include: {
-            items: true,
-            mentor: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-              },
-            },
-          },
-        });
+    // Update slot status
+    await tx.slot.update({
+      where: { id: item.slotId },
+      data: { status: SlotStatus.BOOKED },
+    });
 
-        // Update slot statuses to BOOKED
-        await tx.slot.updateMany({
-          where: {
-            id: { in: items.map((item) => item.slotId) },
-          },
-          data: {
-            status: SlotStatus.BOOKED,
-          },
-        });
+    // Mark cart item as checked out
+    await tx.cartItem.update({
+      where: { id: item.id },
+      data: { status: CartItemStatus.CHECKED_OUT },
+    });
 
-        // Mark cart items as CHECKED_OUT
-        await tx.cartItem.updateMany({
-          where: {
-            id: { in: items.map((item) => item.id) },
-          },
-          data: {
-            status: CartItemStatus.CHECKED_OUT,
-          },
-        });
+    return newBooking;
+  });
 
-        // Create notification for mentor
-        await tx.notification.create({
-          data: {
-            userId: mentorId,
-            title: "New Booking Received",
-            message: `You have received a new booking for ${items.length} slot(s)`,
-          },
-        });
-
-        return newBooking;
-      });
-
-      createdBookings.push(booking);
-    }
+  createdBookings.push(booking);
+}
 
     return res.status(201).json({
       success: true,
@@ -292,7 +265,7 @@ export const getAllBookings = async (req: AuthRequest, res: Response) => {
 export const getMentorBookings = async (req: AuthRequest, res: Response) => {
   try {
     requireUser(req);
-    const { id } = req.user;
+    const { userId: id } = req.user;
 
     const bookings = await prisma.booking.findMany({
       where: {
@@ -347,7 +320,7 @@ export const getMentorBookings = async (req: AuthRequest, res: Response) => {
 export const getAllUserBooking = async (req: AuthRequest, res: Response) => {
   try {
     requireUser(req);
-    const { id } = req.user;
+    const { userId: id } = req.user;
 
     const bookings = await prisma.booking.findMany({
       where: {
@@ -402,7 +375,7 @@ export const getAllUserBooking = async (req: AuthRequest, res: Response) => {
 export const cancelABooking = async (req: AuthRequest, res: Response) => {
   try {
     requireUser(req);
-    const { id } = req.user;
+    const { userId: id } = req.user;
     const { bookingId } = req.params;
 
     if(!bookingId){

@@ -10,7 +10,7 @@ import { prisma } from "../prisma.js";
 export const getAllCartItems = async (req: AuthRequest, res: Response) => {
   try {
     requireUser(req);
-    const { id } = req.user;
+    const { userId: id } = req.user;
 
     // Get user's cart with all active items
     const cart = await prisma.cart.findUnique({
@@ -84,7 +84,7 @@ export const getAllCartItems = async (req: AuthRequest, res: Response) => {
 export const addItemToCart = async (req: AuthRequest, res: Response) => {
   try {
     requireUser(req);
-    const { id: userId } = req.user;
+    const { userId } = req.user;
 
     // Validate request body
     const validationResult = addCartItemSchema.safeParse(req.body);
@@ -218,7 +218,7 @@ export const addItemToCart = async (req: AuthRequest, res: Response) => {
 export const removeItemFromCart = async (req: AuthRequest, res: Response) => {
   try {
     requireUser(req);
-    const { id: userId } = req.user;
+    const { userId } = req.user;
 
     // Validate params
     const validationResult = removeCartItemSchema.safeParse(req.params);
@@ -273,7 +273,7 @@ export const removeItemFromCart = async (req: AuthRequest, res: Response) => {
 export const clearCart = async (req: AuthRequest, res: Response) => {
   try {
     requireUser(req);
-    const { id: userId } = req.user;
+    const { userId } = req.user;
 
     // Get user's cart
     const cart = await prisma.cart.findUnique({
