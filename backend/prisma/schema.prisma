@@ -91,58 +91,76 @@ model Slot {
   mentorId     String
   mentor       User        @relation("MentorSlots", fields: [mentorId], references: [id], onDelete: Cascade)
   date         DateTime    @db.Date
-  startTime    String      // Format: "HH:MM" (e.g., "13:00")
-  endTime      String      // Format: "HH:MM" (e.g., "13:30")
+  startTime    String
+  endTime      String
   status       SlotStatus  @default(CLOSED)
-  price        Float       // Price for this specific slot (captured at slot creation) (for now same as it is mentor profile price)
-  
-  // Timestamps
+  price        Float
+
+  bookingItem  BookingItem?   // ✅ instead of Booking
+  cartItems    CartItem[]
+
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
 
-  // Relations
-  booking      Booking?
-  cartItems    CartItem[]
-
-  @@unique([mentorId, date, startTime]) // Ensure no duplicate slots for same mentor at same time
+  @@unique([mentorId, date, startTime])
   @@index([mentorId])
   @@index([date])
   @@index([status])
-  @@index([mentorId, date, status])
 }
 
+
 model Booking {
-  id          String        @id @default(cuid())
-  slotId      String        @unique // One-to-one with Slot
-  slot        Slot          @relation(fields: [slotId], references: [id], onDelete: Cascade)
-  
+  id          String           @id @default(cuid())
+
+  // Relations
   studentId   String
-  student     User          @relation("StudentBookings", fields: [studentId], references: [id], onDelete: Cascade)
+  student     User             @relation("StudentBookings", fields: [studentId], references: [id], onDelete: Cascade)
   
   mentorId    String
-  mentor      User          @relation("MentorBookings", fields: [mentorId], references: [id], onDelete: Cascade)
-  
+  mentor      User             @relation("MentorBookings", fields: [mentorId], references: [id], onDelete: Cascade)
+
+  items       BookingItem[]    // ✅ New: A booking can have many booking items
+
   // Booking details
-  date        DateTime      @db.Date
-  startTime   String        // Format: "HH:MM"
-  endTime     String        // Format: "HH:MM"
-  price       Float         // Price at the time of booking (immutable)
-  status      BookingStatus @default(PENDING)
+  totalPrice  Float            // ✅ Sum of all item prices
+  status      BookingStatus    @default(PENDING)
   
-  // Payment details (optional)
-  paymentId   String?       // Reference to payment gateway transaction
+  // Payment details
+  paymentId   String?
   paidAt      DateTime?
-  
+
   // Timestamps
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
 
   @@index([studentId])
   @@index([mentorId])
-  @@index([date])
   @@index([status])
-  @@index([studentId, date, startTime]) // Help enforce max 2 bookings per time slot
-  @@index([mentorId, date, startTime]) // Prevent double booking
+}
+
+
+model BookingItem {
+  id          String         @id @default(cuid())
+  bookingId   String
+  booking     Booking        @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  slotId      String         @unique
+  slot        Slot           @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  
+  // Cached data for historical integrity
+  mentorId    String
+  date        DateTime       @db.Date
+  startTime   String
+  endTime     String
+  price       Float
+  status      BookingStatus  @default(CONFIRMED)
+  
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([bookingId])
+  @@index([slotId])
+  @@index([mentorId])
 }
 
 model Cart {
@@ -185,12 +203,12 @@ model CartItem {
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
 
-  @@unique([cartId, slotId]) // User can't add same slot twice to cart
+  @@unique([cartId, slotId]) 
   @@index([cartId])
   @@index([userId])
   @@index([slotId])
   @@index([status])
-  @@index([userId, date, startTime]) // Help enforce max 2 bookings per time slot
+  @@index([userId, date, startTime]) 
 }
 
 model Notification {
