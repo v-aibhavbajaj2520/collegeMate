@@ -44,6 +44,7 @@ interface BackendMentor {
 // Frontend Mentor interface
 interface Mentor {
   id: number;
+  backendId: string; // Store the actual backend ID for API calls
   name: string;
   university: string;
   degree: string;
@@ -123,6 +124,7 @@ const MeetYourMentors = () => {
 
     return {
       id: generateNumericId(backendMentor.id),
+      backendId: backendMentor.id, // Store the actual backend ID
       name: backendMentor.name,
       university: backendMentor.college?.name || 'Not specified',
       degree: backendMentor.course?.name || 'Not specified',
