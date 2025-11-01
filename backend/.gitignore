@@ -30,4 +30,4 @@ dist
 
 ./dist
 
-/.env
+.env
