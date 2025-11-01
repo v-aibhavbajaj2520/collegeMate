@@ -314,7 +314,6 @@ export const getAllSlotsOfMentor = async (req: AuthRequest, res: Response) => {
 export const getMentorAvailableSlots = async (req: any, res: Response) => {
   try {
     const { mentorId } = req.params;
-    const { date, startDate, endDate } = req.query;
 
     if (!mentorId) {
       return res.status(400).json({
@@ -354,52 +353,20 @@ export const getMentorAvailableSlots = async (req: any, res: Response) => {
       });
     }
 
-    // Build where clause for available slots only
-    const whereClause: any = {
-      mentorId,
-      status: "AVAILABLE",
-    };
-
-    // Fetch available slots (only future slots)
+    // Calculate time boundaries
     const now = new Date();
+    const fortyEightHoursLater = new Date(now.getTime() + 48 * 60 * 60 * 1000);
 
-    // Filter by exact date if provided (takes priority)
-    if (date && typeof date === "string") {
-      const selectedDate = new Date(date);
-      selectedDate.setHours(0, 0, 0, 0);
-      // Ensure the date is in the future
-      if (selectedDate >= now) {
-        whereClause.date = selectedDate;
-      } else {
-        // If date is in the past, return empty
-        return res.status(200).json({
-          success: true,
-          message: "Available slots retrieved successfully",
-          data: {
-            slots: [],
-            totalCount: 0,
-          },
-        });
-      }
-    } else {
-      // Filter by date range if provided, or default to future slots
-      whereClause.date = {};
-      if (startDate && typeof startDate === "string") {
-        const start = new Date(startDate);
-        start.setHours(0, 0, 0, 0);
-        whereClause.date.gte = start > now ? start : now;
-      } else {
-        whereClause.date.gte = now;
-      }
-      if (endDate && typeof endDate === "string") {
-        const end = new Date(endDate);
-        end.setHours(23, 59, 59, 999);
-        whereClause.date.lte = end;
-      }
-    }
-
+    // Fetch all available slots within the date range
     const slots = await prisma.slot.findMany({
-      where: whereClause,
+      where: {
+        mentorId,
+        status: "AVAILABLE",
+        date: {
+          gte: now,
+          lte: fortyEightHoursLater,
+        },
+      },
       select: {
         id: true,
         date: true,
@@ -414,12 +381,23 @@ export const getMentorAvailableSlots = async (req: any, res: Response) => {
       ],
     });
 
+    // Filter slots to ensure startTime is within 48 hours
+    const filteredSlots = slots.filter((slot) => {
+      // Combine date and startTime to create a complete datetime
+      const [hours, minutes] :number[] = slot.startTime.split(":").map(Number);
+      const slotStartDateTime = new Date(slot.date);
+      slotStartDateTime.setHours(hours as number, minutes, 0, 0);
+
+      // Check if slot start time is in the future and within 48 hours
+      return slotStartDateTime > now && slotStartDateTime <= fortyEightHoursLater;
+    });
+
     return res.status(200).json({
       success: true,
       message: "Available slots retrieved successfully",
       data: {
-        slots,
-        totalCount: slots.length,
+        slots: filteredSlots,
+        totalCount: filteredSlots.length,
       },
     });
   } catch (error: any) {
