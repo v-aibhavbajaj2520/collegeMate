@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../../contexts/AuthContext';
+import { useCart } from '../../../contexts/CartContext';
 import NotificationBell from './NotificationBell';
+import Cart from '../../Cart';
 
 interface DashboardHeaderProps {
   onMenuClick?: () => void;
@@ -8,7 +10,9 @@ interface DashboardHeaderProps {
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onMenuClick }) => {
   const { user, logout } = useAuth();
+  const { totalItems } = useCart();
   const [profileOpen, setProfileOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
@@ -37,6 +41,24 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onMenuClick }) => {
 
         {/* Right Zone - User Actions */}
         <div className="flex items-center space-x-6">
+          {/* Cart Icon - Only for USER role */}
+          {user?.role === 'USER' && (
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className="relative p-3 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-all duration-300 group"
+              title="View Cart"
+            >
+              <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              {totalItems > 0 && (
+                <span className="absolute top-1 right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {totalItems > 9 ? '9+' : totalItems}
+                </span>
+              )}
+            </button>
+          )}
+          
           {/* Notification Bell */}
           <NotificationBell />
 
@@ -88,6 +110,9 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onMenuClick }) => {
           </div>
         </div>
       </div>
+      
+      {/* Cart Component */}
+      {user?.role === 'USER' && <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />}
     </header>
   );
 };

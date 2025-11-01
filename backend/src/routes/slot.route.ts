@@ -4,6 +4,7 @@ import {
   openSlot,
   closeSlot,
   getAllSlotsOfMentor,
+  getMentorAvailableSlots,
 } from "../controllers/slot.controller.js";
 
 const router = express.Router();
@@ -53,15 +54,15 @@ router.get(
 /**
  * @route   GET /api/slots/mentor/:mentorId
  * @desc    Get all available slots for a specific mentor (for students to view)
- * @access  Public or Private (depending on your requirements)
+ * @access  Public
  * @param   mentorId - The ID of the mentor
- * @query   date? - Filter by date
+ * @query   date? - Filter by exact date (YYYY-MM-DD)
+ * @query   startDate? - Filter by start date range (YYYY-MM-DD)
+ * @query   endDate? - Filter by end date range (YYYY-MM-DD)
  */
-// Uncomment if you need students to view mentor slots
-// router.get(
-//   "/mentor/:mentorId",
-//   authenticateToken, // or make it public
-//   getMentorAvailableSlots
-// );
+router.get(
+  "/mentor/:mentorId",
+  getMentorAvailableSlots
+);
 
 export default router;

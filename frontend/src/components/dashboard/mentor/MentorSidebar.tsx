@@ -51,14 +51,14 @@ const MentorSidebar: React.FC<MentorSidebarProps> = ({
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
-            <div className="flex items-center space-x-3">
+            {/* <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">M</span>
               </div>
               <div>
                 <h2 className="text-xl font-bold gradient-text">Mentor Dashboard</h2>
               </div>
-            </div>
+            </div> */}
             <button
               onClick={onToggle}
               className="lg:hidden p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100"

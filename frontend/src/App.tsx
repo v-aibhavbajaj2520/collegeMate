@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { NotificationProvider } from './contexts/NotificationContext';
+import { CartProvider } from './contexts/CartContext';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import PartnerColleges from './components/PartnerColleges';
@@ -18,6 +19,7 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import MentorDashboard from './pages/MentorDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import EnrollmentPage from './pages/EnrollmentPage';
+import BookACallPage from './pages/BookACallPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardLayout from './components/dashboard/shared/DashboardLayout';
 
@@ -25,7 +27,8 @@ function App() {
   return (
     <AuthProvider>
       <NotificationProvider>
-        <Router>
+        <CartProvider>
+          <Router>
           <Routes>
             {/* Public Routes - with main navbar */}
             <Route path="/" element={
@@ -94,6 +97,16 @@ function App() {
               </div>
             } />
             
+            {/* Book a Call Route - with main navbar */}
+            <Route path="/book-a-call" element={
+              <div className="min-h-screen bg-transparent">
+                <Navbar />
+                <main className="pt-24">
+                  <BookACallPage />
+                </main>
+              </div>
+            } />
+            
             {/* Dashboard Routes - completely isolated with DashboardLayout */}
             <Route 
               path="/dashboard/*" 
@@ -121,6 +134,7 @@ function App() {
             />
           </Routes>
         </Router>
+        </CartProvider>
       </NotificationProvider>
     </AuthProvider>
   );

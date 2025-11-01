@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import Cart from '../../Cart';
 
 interface UserSidebarProps {
   isOpen: boolean;
@@ -8,8 +9,14 @@ interface UserSidebarProps {
 
 const UserSidebar: React.FC<UserSidebarProps> = ({ isOpen, onClose }) => {
   const location = useLocation();
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
-  const navigationItems = [
+  const navigationItems: Array<{
+    name: string;
+    href: string;
+    icon: React.ReactNode;
+    isButton?: boolean;
+  }> = [
     {
       name: 'Dashboard',
       href: '/dashboard',
@@ -26,6 +33,16 @@ const UserSidebar: React.FC<UserSidebarProps> = ({ isOpen, onClose }) => {
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      )
+    },
+    {
+      name: 'Cart',
+      href: '#',
+      isButton: true, // Special flag to indicate this should be a button
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
         </svg>
       )
     },
@@ -107,6 +124,29 @@ const UserSidebar: React.FC<UserSidebarProps> = ({ isOpen, onClose }) => {
         <nav className="flex-1 px-6 py-4 space-y-2">
           {navigationItems.map((item) => {
             const isActive = location.pathname === item.href;
+            
+            // If it's a button (like Cart), render button instead of Link
+            if (item.isButton) {
+              return (
+                <button
+                  key={item.name}
+                  onClick={() => {
+                    setIsCartOpen(true);
+                    onClose();
+                  }}
+                  className={`
+                    relative flex items-center w-full px-4 py-4 rounded-xl text-sm font-medium transition-all duration-300 group
+                    text-gray-300 hover:bg-white/10 hover:text-white
+                  `}
+                >
+                  <span className="mr-4 transition-transform group-hover:scale-110">
+                    {item.icon}
+                  </span>
+                  <span className="font-medium">{item.name}</span>
+                </button>
+              );
+            }
+            
             return (
               <Link
                 key={item.name}
@@ -152,6 +192,9 @@ const UserSidebar: React.FC<UserSidebarProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
       </div>
+      
+      {/* Cart Component */}
+      <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </>
   );
 };

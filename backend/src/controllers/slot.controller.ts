@@ -309,3 +309,125 @@ export const getAllSlotsOfMentor = async (req: AuthRequest, res: Response) => {
     });
   }
 };
+
+// Public endpoint to get available slots for a specific mentor
+export const getMentorAvailableSlots = async (req: any, res: Response) => {
+  try {
+    const { mentorId } = req.params;
+    const { date, startDate, endDate } = req.query;
+
+    if (!mentorId) {
+      return res.status(400).json({
+        success: false,
+        message: "Mentor ID is required",
+      });
+    }
+
+    // Check if mentor exists and is verified
+    const mentor = await prisma.user.findUnique({
+      where: { id: mentorId },
+      select: {
+        id: true,
+        role: true,
+        isVerified: true,
+      },
+    });
+
+    if (!mentor) {
+      return res.status(404).json({
+        success: false,
+        message: "Mentor not found",
+      });
+    }
+
+    if (mentor.role !== "MENTOR") {
+      return res.status(400).json({
+        success: false,
+        message: "User is not a mentor",
+      });
+    }
+
+    if (!mentor.isVerified) {
+      return res.status(403).json({
+        success: false,
+        message: "Mentor is not verified",
+      });
+    }
+
+    // Build where clause for available slots only
+    const whereClause: any = {
+      mentorId,
+      status: "AVAILABLE",
+    };
+
+    // Fetch available slots (only future slots)
+    const now = new Date();
+
+    // Filter by exact date if provided (takes priority)
+    if (date && typeof date === "string") {
+      const selectedDate = new Date(date);
+      selectedDate.setHours(0, 0, 0, 0);
+      // Ensure the date is in the future
+      if (selectedDate >= now) {
+        whereClause.date = selectedDate;
+      } else {
+        // If date is in the past, return empty
+        return res.status(200).json({
+          success: true,
+          message: "Available slots retrieved successfully",
+          data: {
+            slots: [],
+            totalCount: 0,
+          },
+        });
+      }
+    } else {
+      // Filter by date range if provided, or default to future slots
+      whereClause.date = {};
+      if (startDate && typeof startDate === "string") {
+        const start = new Date(startDate);
+        start.setHours(0, 0, 0, 0);
+        whereClause.date.gte = start > now ? start : now;
+      } else {
+        whereClause.date.gte = now;
+      }
+      if (endDate && typeof endDate === "string") {
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        whereClause.date.lte = end;
+      }
+    }
+
+    const slots = await prisma.slot.findMany({
+      where: whereClause,
+      select: {
+        id: true,
+        date: true,
+        startTime: true,
+        endTime: true,
+        price: true,
+        status: true,
+      },
+      orderBy: [
+        { date: "asc" },
+        { startTime: "asc" },
+      ],
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Available slots retrieved successfully",
+      data: {
+        slots,
+        totalCount: slots.length,
+      },
+    });
+  } catch (error: any) {
+    console.error("Error fetching mentor available slots:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};

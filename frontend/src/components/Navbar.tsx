@@ -2,11 +2,15 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useCart } from '../contexts/CartContext';
+import Cart from './Cart';
 
 const Navbar = () => {
   const { user } = useAuth();
+  const { totalItems } = useCart();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
 
   useEffect(() => {
@@ -21,7 +25,7 @@ const Navbar = () => {
     { name: 'Home', href: '/' },
     { name: 'About Us', href: '/about' },
     { name: 'Browse Mentors', href: '/mentors' },
-    { name: 'Book a Call', href: '#contact' },
+    { name: 'Enroll through Us', href: '/enroll' },
     { name: 'Courses', href: '#courses' },
   ];
 
@@ -78,7 +82,7 @@ const Navbar = () => {
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -2 }}
               >
-                {item.name === 'About Us' || item.name === 'Browse Mentors' ? (
+                {item.name === 'About Us' || item.name === 'Browse Mentors' || item.name === 'Enroll through Us' ? (
                   <Link
                     to={item.href}
                     className="text-white hover:text-blue-300 font-medium transition-colors duration-300 relative group"
@@ -127,20 +131,38 @@ const Navbar = () => {
                 </Link>
               </>
             ) : (
-              // Authenticated View - Show Enroll button and Profile icon
+              // Authenticated View - Show Book a Call button, Cart icon, and Profile icon
               <>
-                <Link to="/enroll">
+                <Link to="/book-a-call">
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="flex items-center space-x-2 bg-[#2079FF] hover:bg-green-700 text-white px-6 py-3 rounded-full font-medium transition-all duration-300 shadow-lg"
+                    className="flex items-center space-x-2 bg-[#2079FF] hover:bg-blue-700 text-white px-6 py-3 rounded-full font-medium transition-all duration-300 shadow-lg"
                   >
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 1 1 0 00.2-.38.8.8 0 01.15-.4L3.31 9.397zM6.25 13.62a8.969 8.969 0 002.18-.37l-2.18-2.18v2.55zM8.5 15.5a8.969 8.969 0 002.18-.37L8.5 13.12v2.38zM12.5 15.5a8.969 8.969 0 002.18-.37L12.5 13.12v2.38zM15 10.12l1.69-.723a1 1 0 00.2.38 1 1 0 01-.89.89 8.969 8.969 0 00-1.05.174V10.12z" />
+                      <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                     </svg>
-                    <span>Enroll through Us</span>
+                    <span>Book a Call</span>
                   </motion.button>
                 </Link>
+                {user?.role === 'USER' && (
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setIsCartOpen(true)}
+                    className="relative w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-all duration-300"
+                    title="View Cart"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    {totalItems > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                        {totalItems > 9 ? '9+' : totalItems}
+                      </span>
+                    )}
+                  </motion.button>
+                )}
                 <Link to={getDashboardPath()}>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
@@ -208,7 +230,7 @@ const Navbar = () => {
             {/* Navigation Links */}
             <div className="space-y-2">
               {navItems.map((item) => (
-                item.name === 'About Us' || item.name === 'Browse Mentors' ? (
+                item.name === 'About Us' || item.name === 'Browse Mentors' || item.name === 'Enroll through Us' ? (
                   <Link
                     key={item.name}
                     to={item.href}
@@ -258,24 +280,45 @@ const Navbar = () => {
                   </Link>
                 </>
               ) : (
-                // Authenticated View - Show Enroll button and Profile
+                // Authenticated View - Show Book a Call button, Cart, and Profile
                 <>
                   <div className="text-center mb-4">
                     <p className="text-white text-sm">Welcome, {user.name}!</p>
                     <p className="text-gray-400 text-xs capitalize">{user.role}</p>
                   </div>
-                  <Link to="/enroll" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Link to="/book-a-call" onClick={() => setIsMobileMenuOpen(false)}>
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="w-full flex items-center justify-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-6 py-4 rounded-lg font-medium transition-all duration-300 shadow-lg"
+                      className="w-full flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 rounded-lg font-medium transition-all duration-300 shadow-lg"
                     >
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 1 1 0 00.2-.38.8.8 0 01.15-.4L3.31 9.397zM6.25 13.62a8.969 8.969 0 002.18-.37l-2.18-2.18v2.55zM8.5 15.5a8.969 8.969 0 002.18-.37L8.5 13.12v2.38zM12.5 15.5a8.969 8.969 0 002.18-.37L12.5 13.12v2.38zM15 10.12l1.69-.723a1 1 0 00.2.38 1 1 0 01-.89.89 8.969 8.969 0 00-1.05.174V10.12z" />
+                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                       </svg>
-                      <span>Enroll with Us</span>
+                      <span>Book a Call</span>
                     </motion.button>
                   </Link>
+                  {user.role === 'USER' && (
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        setIsCartOpen(true);
+                      }}
+                      className="w-full flex items-center justify-center space-x-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-4 rounded-lg font-medium transition-all duration-300 shadow-lg mt-4 relative"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                      <span>Cart</span>
+                      {totalItems > 0 && (
+                        <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                          {totalItems > 9 ? '9+' : totalItems}
+                        </span>
+                      )}
+                    </motion.button>
+                  )}
                   <Link to={getDashboardPath()} onClick={() => setIsMobileMenuOpen(false)}>
                     <motion.button
                       whileHover={{ scale: 1.02 }}
@@ -295,6 +338,9 @@ const Navbar = () => {
         </motion.div>
         </div>
       </motion.nav>
+      
+      {/* Cart Component */}
+      {user?.role === 'USER' && <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />}
     </div>
   );
 };

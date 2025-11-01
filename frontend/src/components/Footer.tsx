@@ -36,7 +36,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-gray-900 text-white relative overflow-hidden">
+    <footer id="contact" className="bg-gray-900 text-white relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute inset-0" style={{
