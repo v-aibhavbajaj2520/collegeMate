@@ -26,71 +26,100 @@ function App() {
     <AuthProvider>
       <NotificationProvider>
         <Router>
-        <Routes>
-          {/* Public Routes - with main navbar */}
-          <Route path="/*" element={
-            <div className="min-h-screen bg-transparent">
-              <Navbar />
-              <main className="pt-24">
-                <Routes>
-                  <Route path="/" element={
-                    <>
-                      <Hero />
-                      <PartnerColleges />
-                      <MeetYourMentors />
-                      <Perks />
-                      <PremiumCourses />
-                      <SuccessStories />
-                      <FAQs />
-                      <Footer />
-                    </>
-                  } />
-                  <Route path="/about" element={<AboutPage />} />
-                  <Route path="/mentors" element={<BrowseMentorsPage />} />
-                  <Route path="/signup" element={<SignupPage />} />
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route path="/reset-password" element={<ResetPasswordPage />} />
-                </Routes>
-              </main>
-            </div>
-          } />
-          
-          {/* Enrollment Route - with main navbar */}
-          <Route path="/enroll" element={
-            <div className="min-h-screen bg-transparent">
-              <Navbar />
-              <main className="pt-24">
-                <EnrollmentPage />
-              </main>
-            </div>
-          } />
-          
-          {/* Dashboard Routes - completely isolated with DashboardLayout */}
-          <Route 
-            path="/dashboard/*" 
-            element={
-              <ProtectedRoute allowedRoles={['USER']}>
-                <DashboardLayout />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/mentor/dashboard/*" 
-            element={
-              <ProtectedRoute allowedRoles={['MENTOR']}>
-                <MentorDashboard />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/admin/dashboard/*" 
-            element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
-                <AdminDashboard />
-              </ProtectedRoute>
-            } 
-          />
-        </Routes>
+          <Routes>
+            {/* Public Routes - with main navbar */}
+            <Route path="/" element={
+              <div className="min-h-screen bg-transparent">
+                <Navbar />
+                <main className="pt-24">
+                  <Hero />
+                  <PartnerColleges />
+                  <MeetYourMentors />
+                  <Perks />
+                  <PremiumCourses />
+                  <SuccessStories />
+                  <FAQs />
+                  <Footer />
+                </main>
+              </div>
+            } />
+            <Route path="/about" element={
+              <div className="min-h-screen bg-transparent">
+                <Navbar />
+                <main className="pt-24">
+                  <AboutPage />
+                </main>
+              </div>
+            } />
+            <Route path="/mentors" element={
+              <div className="min-h-screen bg-transparent">
+                <Navbar />
+                <main className="pt-24">
+                  <BrowseMentorsPage />
+                </main>
+              </div>
+            } />
+            <Route path="/signup" element={
+              <div className="min-h-screen bg-transparent">
+                <Navbar />
+                <main className="pt-24">
+                  <SignupPage />
+                </main>
+              </div>
+            } />
+            <Route path="/login" element={
+              <div className="min-h-screen bg-transparent">
+                <Navbar />
+                <main className="pt-24">
+                  <LoginPage />
+                </main>
+              </div>
+            } />
+            <Route path="/reset-password" element={
+              <div className="min-h-screen bg-transparent">
+                <Navbar />
+                <main className="pt-24">
+                  <ResetPasswordPage />
+                </main>
+              </div>
+            } />
+            
+            {/* Enrollment Route - with main navbar */}
+            <Route path="/enroll" element={
+              <div className="min-h-screen bg-transparent">
+                <Navbar />
+                <main className="pt-24">
+                  <EnrollmentPage />
+                </main>
+              </div>
+            } />
+            
+            {/* Dashboard Routes - completely isolated with DashboardLayout */}
+            <Route 
+              path="/dashboard/*" 
+              element={
+                <ProtectedRoute allowedRoles={['USER']}>
+                  <DashboardLayout />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/mentor/dashboard/*" 
+              element={
+                <ProtectedRoute allowedRoles={['MENTOR']}>
+                  <MentorDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/dashboard/*" 
+              element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } 
+            />
+          </Routes>
         </Router>
       </NotificationProvider>
     </AuthProvider>

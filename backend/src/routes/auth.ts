@@ -1,5 +1,6 @@
 import express from 'express';
 import { authenticateToken } from '../middleware/authenticate.js';
+import { upload } from '../utils/cloudinary.js';
 import {
   signup,
   verifyOtp,
@@ -49,7 +50,7 @@ router.post('/google/verify', googleVerify);
 // Protected routes
 router.get('/me', authenticateToken, getMe);
 
-router.put('/update-profile', authenticateToken, updateProfile);
+router.put('/update-profile', authenticateToken, upload.single('photo'), updateProfile);
 
 router.post('/change-password', authenticateToken, changePassword);
 

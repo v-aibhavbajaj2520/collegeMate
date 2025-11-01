@@ -69,6 +69,15 @@ model User {
   // Google OAuth (optional)
   googleId      String?   @unique
 
+  // Student specific fields (only for users with role USER)
+  photo         String?   // Cloudinary URL for profile photo
+  age           Int?      // Student age
+  phone         String?   // Phone number
+  school10th    String?   // 10th school name
+  school12th    String?   // 12th school name
+  collegesInterested String[] // Array of college IDs that student is interested in
+  coursesInterested  String[] // Array of course IDs that student is interested in
+
   // Timestamps
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt

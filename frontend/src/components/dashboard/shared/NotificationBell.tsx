@@ -1,10 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Bell } from 'lucide-react';
-import { useNotifications } from '../../../contexts/NotificationContext';
+import NotificationContext from '../../../contexts/NotificationContext';
 import NotificationsModal from './NotificationsModal';
 
 const NotificationBell: React.FC = () => {
-  const { notifications, unreadCount, isLoading, markAsRead, deleteNotificationById } = useNotifications();
+  // Use useContext directly with safe fallback
+  const notificationContext = useContext(NotificationContext);
+  
+  // If context is not available, render nothing or a fallback
+  if (!notificationContext) {
+    return null;
+  }
+  
+  const { notifications, unreadCount, isLoading, markAsRead, deleteNotificationById } = notificationContext;
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleMarkAsRead = async (notificationId: string) => {

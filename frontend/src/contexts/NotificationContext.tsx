@@ -14,6 +14,9 @@ interface NotificationContextType {
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
+// Export the context for direct use when needed
+export default NotificationContext;
+
 export const useNotifications = () => {
   const context = useContext(NotificationContext);
   if (context === undefined) {
@@ -48,8 +51,15 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
       setNotifications(response.notifications);
       setUnreadCount(response.unreadCount);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch notifications');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch notifications';
+      setError(errorMessage);
       console.error('Error fetching notifications:', err);
+      // If it's an auth error, notifications will be cleared when user is redirected
+      // Don't show persistent errors for auth failures as they'll be handled by redirect
+      if (errorMessage.includes('Authentication failed') || errorMessage.includes('login')) {
+        setNotifications([]);
+        setUnreadCount(0);
+      }
     } finally {
       setIsLoading(false);
     }

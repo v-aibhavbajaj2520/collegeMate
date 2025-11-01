@@ -5,6 +5,7 @@ import { sendOTPEmail, sendPasswordResetEmail } from '../utils/email.js';
 import { generateOTP, generateToken } from '../utils/helpers.js';
 import { googleClient } from '../utils/google.js';
 import { createWelcomeNotification } from '../utils/notifications.js';
+import { uploadToCloudinary } from '../utils/cloudinary.js';
 import type { Request, Response } from 'express';
 import type { AuthRequest } from '../middleware/authenticate.js';
 
@@ -247,9 +248,31 @@ export const googleVerify = async (req: Request, res: Response) => {
 export const getMe = async (req: AuthRequest, res: Response) => {
 	try {
         requireUser(req);
-		const user = await prisma.user.findUnique({ where: { id: req.user.userId }, select: { id: true, email: true, name: true, role: true, isVerified: true, googleId: true, createdAt: true, updatedAt: true } });
+		const user = await prisma.user.findUnique({ 
+			where: { id: req.user.userId }
+		});
 		if (!user) return res.status(404).json({ success: false, message: 'User not found' });
-		res.json({ success: true, user });
+		
+		// Select only needed fields (to avoid Prisma type errors until client is regenerated)
+		const userResponse = {
+			id: user.id,
+			email: user.email,
+			name: user.name,
+			role: user.role,
+			isVerified: user.isVerified,
+			googleId: user.googleId,
+			photo: (user as any).photo || null,
+			age: (user as any).age || null,
+			phone: (user as any).phone || null,
+			school10th: (user as any).school10th || null,
+			school12th: (user as any).school12th || null,
+			collegesInterested: (user as any).collegesInterested || [],
+			coursesInterested: (user as any).coursesInterested || [],
+			createdAt: user.createdAt,
+			updatedAt: user.updatedAt
+		};
+		
+		res.json({ success: true, user: userResponse });
 	} catch (error) {
 		console.error('Get user error:', error);
 		res.status(500).json({ success: false, message: 'Internal server error' });
@@ -258,14 +281,298 @@ export const getMe = async (req: AuthRequest, res: Response) => {
 
 export const updateProfile = async (req: AuthRequest, res: Response) => {
 	try {
-		const { name } = req.body;
-		if (!name) return res.status(400).json({ success: false, message: 'Name is required' });
 		requireUser(req);
-		const updatedUser = await prisma.user.update({ where: { id: req.user.userId }, data: { name, updatedAt: new Date() }, select: { id: true, email: true, name: true, role: true, isVerified: true } });
-		res.json({ success: true, message: 'Profile updated successfully', user: updatedUser });
-	} catch (error) {
+		const { userId: id } = req.user;
+		
+		console.log('Update profile request body:', req.body);
+		console.log('Update profile file:', req.file);
+		
+		let { name, age, phone, school10th, school12th, collegesInterested, coursesInterested } = req.body;
+		
+		// Trim string fields and convert empty strings to null
+		if (name !== undefined && typeof name === 'string') {
+			name = name.trim();
+			if (name === '') name = undefined;
+		}
+		if (phone !== undefined && typeof phone === 'string') {
+			phone = phone.trim();
+			if (phone === '') phone = null;
+		}
+		if (school10th !== undefined && typeof school10th === 'string') {
+			school10th = school10th.trim();
+			if (school10th === '') school10th = null;
+		}
+		if (school12th !== undefined && typeof school12th === 'string') {
+			school12th = school12th.trim();
+			if (school12th === '') school12th = null;
+		}
+		
+		// Get existing user to check for photo deletion
+		const existingUser = await prisma.user.findUnique({ where: { id } });
+		if (!existingUser) {
+			return res.status(404).json({ success: false, message: 'User not found' });
+		}
+
+		let photoUrl = (existingUser as any).photo;
+
+		// Handle photo upload if provided
+		if (req.file) {
+			try {
+				photoUrl = await uploadToCloudinary(req.file, 'collegeMate/profiles');
+				console.log('Photo uploaded successfully:', photoUrl);
+			} catch (uploadError: any) {
+				console.error('Photo upload error:', uploadError);
+				const errorMessage = uploadError?.message || 'Failed to upload photo';
+				// Check if it's a configuration error
+				if (errorMessage.includes('not configured')) {
+					return res.status(500).json({ 
+						success: false, 
+						message: 'Photo upload is not configured. Please contact administrator.',
+						details: 'Cloudinary configuration is missing'
+					});
+				}
+				return res.status(500).json({ 
+					success: false, 
+					message: `Failed to upload photo: ${errorMessage}` 
+				});
+			}
+		}
+
+		// Handle array fields - FormData sends arrays as JSON strings
+		// Always ensure arrays are valid arrays (never null or undefined)
+		try {
+			if (collegesInterested !== undefined && collegesInterested !== null && collegesInterested !== '') {
+				if (typeof collegesInterested === 'string') {
+					// If it's a string (from FormData), try to parse it as JSON
+					try {
+						const parsed = JSON.parse(collegesInterested);
+						collegesInterested = Array.isArray(parsed) ? parsed.filter((id: any) => id !== null && id !== undefined && String(id).trim() !== '') : [];
+					} catch (parseError) {
+						console.warn('Failed to parse collegesInterested as JSON:', parseError);
+						console.warn('Raw collegesInterested value:', collegesInterested);
+						// If not valid JSON, treat as empty array
+						collegesInterested = [];
+					}
+				} else if (Array.isArray(collegesInterested)) {
+					// Already an array, ensure it's valid
+					collegesInterested = collegesInterested.filter((id: any) => id !== null && id !== undefined && String(id).trim() !== '');
+				} else {
+					collegesInterested = [];
+				}
+			} else {
+				collegesInterested = [];
+			}
+		} catch (error) {
+			console.error('Error processing collegesInterested:', error);
+			collegesInterested = [];
+		}
+
+		try {
+			if (coursesInterested !== undefined && coursesInterested !== null && coursesInterested !== '') {
+				if (typeof coursesInterested === 'string') {
+					try {
+						const parsed = JSON.parse(coursesInterested);
+						coursesInterested = Array.isArray(parsed) ? parsed.filter((id: any) => id !== null && id !== undefined && String(id).trim() !== '') : [];
+					} catch (parseError) {
+						console.warn('Failed to parse coursesInterested as JSON:', parseError);
+						console.warn('Raw coursesInterested value:', coursesInterested);
+						// If not valid JSON, treat as empty array
+						coursesInterested = [];
+					}
+				} else if (Array.isArray(coursesInterested)) {
+					// Already an array, ensure it's valid
+					coursesInterested = coursesInterested.filter((id: any) => id !== null && id !== undefined && String(id).trim() !== '');
+				} else {
+					coursesInterested = [];
+				}
+			} else {
+				coursesInterested = [];
+			}
+		} catch (error) {
+			console.error('Error processing coursesInterested:', error);
+			coursesInterested = [];
+		}
+
+		console.log('Parsed collegesInterested:', collegesInterested);
+		console.log('Parsed coursesInterested:', coursesInterested);
+
+		// Build update data
+		const updateData: any = {};
+		// Don't manually set updatedAt - Prisma's @updatedAt handles it automatically
+
+		// Name is required, validate it
+		if (!name || typeof name !== 'string' || name.trim() === '') {
+			return res.status(400).json({ 
+				success: false, 
+				message: 'Name is required and cannot be empty' 
+			});
+		}
+		updateData.name = name.trim();
+		if (age !== undefined && age !== null && age !== '') {
+			const ageNum = parseInt(age.toString());
+			updateData.age = isNaN(ageNum) ? null : ageNum;
+		} else if (age === '' || age === null) {
+			updateData.age = null;
+		}
+		if (phone !== undefined) {
+			updateData.phone = phone && phone.trim() !== '' ? phone.trim() : null;
+		}
+		if (school10th !== undefined) {
+			updateData.school10th = school10th && school10th.trim() !== '' ? school10th.trim() : null;
+		}
+		if (school12th !== undefined) {
+			updateData.school12th = school12th && school12th.trim() !== '' ? school12th.trim() : null;
+		}
+		// Always set arrays (even if empty) - ensure they're proper arrays of strings
+		updateData.collegesInterested = Array.isArray(collegesInterested) 
+			? collegesInterested.map(id => String(id).trim()).filter(id => id !== '')
+			: [];
+		updateData.coursesInterested = Array.isArray(coursesInterested) 
+			? coursesInterested.map(id => String(id).trim()).filter(id => id !== '')
+			: [];
+		if (photoUrl !== undefined && photoUrl !== null) {
+			updateData.photo = photoUrl;
+		}
+
+		console.log('Update data:', JSON.stringify(updateData, null, 2));
+
+		// Validate that array fields are actually arrays
+		if (updateData.collegesInterested && !Array.isArray(updateData.collegesInterested)) {
+			return res.status(400).json({ 
+				success: false, 
+				message: 'collegesInterested must be an array' 
+			});
+		}
+		if (updateData.coursesInterested && !Array.isArray(updateData.coursesInterested)) {
+			return res.status(400).json({ 
+				success: false, 
+				message: 'coursesInterested must be an array' 
+			});
+		}
+
+		// Validate age if provided
+		if (updateData.age !== undefined && updateData.age !== null) {
+			if (typeof updateData.age !== 'number' || updateData.age < 1 || updateData.age > 150) {
+				return res.status(400).json({ 
+					success: false, 
+					message: 'Age must be a number between 1 and 150' 
+				});
+			}
+		}
+
+		try {
+			console.log('Attempting Prisma update with data:', JSON.stringify(updateData, null, 2));
+			
+			// Ensure arrays are properly formatted before update
+			if (updateData.collegesInterested !== undefined) {
+				updateData.collegesInterested = Array.isArray(updateData.collegesInterested) 
+					? updateData.collegesInterested 
+					: [];
+			}
+			if (updateData.coursesInterested !== undefined) {
+				updateData.coursesInterested = Array.isArray(updateData.coursesInterested) 
+					? updateData.coursesInterested 
+					: [];
+			}
+			
+			const updatedUser = await prisma.user.update({ 
+				where: { id }, 
+				data: updateData
+			});
+			console.log('Prisma update successful');
+			
+			// Fetch the updated user with all fields
+			const userWithFields = await prisma.user.findUnique({
+				where: { id },
+				select: {
+					id: true,
+					email: true,
+					name: true,
+					role: true,
+					isVerified: true,
+					photo: true,
+					age: true,
+					phone: true,
+					school10th: true,
+					school12th: true,
+					collegesInterested: true,
+					coursesInterested: true,
+				}
+			});
+			
+			if (!userWithFields) {
+				return res.status(404).json({ 
+					success: false, 
+					message: 'User not found after update' 
+				});
+			}
+			
+			// Build response - ensure all fields are properly typed
+			const userResponse = {
+				id: userWithFields.id,
+				email: userWithFields.email,
+				name: userWithFields.name,
+				role: userWithFields.role,
+				isVerified: userWithFields.isVerified,
+				photo: userWithFields.photo || null,
+				age: userWithFields.age || null,
+				phone: userWithFields.phone || null,
+				school10th: userWithFields.school10th || null,
+				school12th: userWithFields.school12th || null,
+				collegesInterested: Array.isArray(userWithFields.collegesInterested) 
+					? userWithFields.collegesInterested 
+					: [],
+				coursesInterested: Array.isArray(userWithFields.coursesInterested) 
+					? userWithFields.coursesInterested 
+					: []
+			};
+			
+			res.json({ success: true, message: 'Profile updated successfully', user: userResponse });
+		} catch (prismaError: any) {
+			console.error('Prisma update error:', prismaError);
+			console.error('Prisma error code:', prismaError.code);
+			console.error('Prisma error message:', prismaError.message);
+			console.error('Prisma meta:', prismaError.meta);
+			console.error('Update data that failed:', JSON.stringify(updateData, null, 2));
+			
+			// Handle specific Prisma errors
+			if (prismaError.code === 'P2002') {
+				return res.status(400).json({ 
+					success: false, 
+					message: 'A unique constraint failed. Please check your input.',
+					field: prismaError.meta?.target?.[0]
+				});
+			}
+			if (prismaError.code === 'P2025') {
+				return res.status(404).json({ 
+					success: false, 
+					message: 'User not found' 
+				});
+			}
+			// Re-throw to be caught by outer catch
+			throw prismaError;
+		}
+	} catch (error: any) {
 		console.error('Update profile error:', error);
-		res.status(500).json({ success: false, message: 'Internal server error' });
+		console.error('Error stack:', error.stack);
+		console.error('Error details:', JSON.stringify(error, null, 2));
+		
+		// Provide more specific error messages
+		let errorMessage = 'Internal server error';
+		if (error.message) {
+			errorMessage = error.message;
+		} else if (error.code) {
+			errorMessage = `Database error: ${error.code}`;
+		}
+		
+		res.status(500).json({ 
+			success: false, 
+			message: errorMessage,
+			...(process.env.NODE_ENV === 'development' && { 
+				error: error.message,
+				stack: error.stack 
+			})
+		});
 	}
 };
 
